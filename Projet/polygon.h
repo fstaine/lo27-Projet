@@ -69,8 +69,8 @@ void printPoint(Point pt);
 void printPolygon(Polygon);
 
 /*
- * 
- * 
+ *
+ *
  * Return a pointer on the string containing the coordonate of the polygon poly
  */
 char *toString(Polygon poly);
@@ -94,7 +94,7 @@ Bool isEmpty(Polygon poly);
 
 void isTrue(Bool b);
 
-
+Polygon unionPolygons(Polygon p1, Polygon p2);
 
 
 
