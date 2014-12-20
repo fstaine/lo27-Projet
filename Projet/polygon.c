@@ -238,4 +238,24 @@ void isTrue(Bool b)
 		printf("False\n");
 }
 
+Polygon unionPolygons (Polygon p1, Polygon p2)
+{
+	if (isEmpty(p1) and isEmpty(p2))
+    {
+        return p1;
+    }
+    else
+    {
+        if (isEmpty(p1))
+        {
+            return p2;
+        }
+        else
+        {
+            if (isEmpty(p2))
+            {
+                return p1;
+            }
+            else
+            {
 
