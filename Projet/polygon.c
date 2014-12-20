@@ -1,4 +1,4 @@
-
+test
 #include <polygon.h>
 
 Point createPoint(float x, float y) /* Must change to double precision */
@@ -10,7 +10,7 @@ Point createPoint(float x, float y) /* Must change to double precision */
 }
 
 Polygon createPolygon()
-{	
+{
 	Polygon poly;
 	poly.size = 0;
 	poly.head = NULL;
@@ -116,9 +116,9 @@ Bool containsPoint(const Polygon poly, Point p)
 	/*Vector v;*/
 	Elt *start,*stop;
 	Bool contains;
-	
+
 	contains = false;
-	
+
 	start = poly.head;
 	for(i=0;i<poly.size;i++)
 	{
@@ -140,7 +140,7 @@ Bool containsPoint(const Polygon poly, Point p)
 /*
 Polygon convexhull(Polygon poly)
 {
-	
+
 }*/
 
 char *toString(Polygon poly)
@@ -181,11 +181,11 @@ Bool isConvexPoints(Polygon poly, Elt *elem)
 		return true;
 	else
 	{
-		
+
 		* Si le milieu entre prev et next est du coté opposé à la normale
 		 * Alors le polygone n'est pas convexe en ce point => return TRUE
 		 * Sinon, il est convexe => return FALSE
-		 
+
 	}
 }
 
