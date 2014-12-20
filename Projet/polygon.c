@@ -1,4 +1,3 @@
-test
 #include <polygon.h>
 
 Point createPoint(float x, float y) /* Must change to double precision */
