@@ -1,6 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/* For printPolygon : *\
+#include <sys/ioctl.h>
+#include <unistd.h>
+\**********************/
+
+
+#define POS(x,y) printf("\033[%d;%dH",(int)x,(int)y);  // Move to the x,y position
+#define CLEAR() printf("\033[2J\033[0;0H");
+
+
+
 /* Types */
 typedef struct{
 	float x;
@@ -34,6 +45,12 @@ typedef enum {
 	true = (-1<1)
 }Bool;
 
+/**********************\
+ * Provided Functions *
+\**********************/
+
+
+
 /*
  * Allocate the memory for a Point structure and fill x and y
  * x : double, the coordonate x of the point
@@ -57,16 +74,35 @@ Polygon createPolygon();
 Polygon addPoint(Polygon poly, Point pt);
 
 Polygon removePoint(Polygon poly, int nb);
-/*Polygon union(Polygon p1, Polygon p2);*/
-Polygon intersection(Polygon p1, Polygon p2);
-Polygon exclusiveOR(Polygon p1, Polygon p2);
-Polygon difference(Polygon p1, Polygon p2);
 
+Polygon unionPolygons(Polygon p1, Polygon p2);
+Polygon intersectionPolygons(Polygon p1, Polygon p2);
+Polygon exclusiveORPolygons(Polygon p1, Polygon p2);
+Polygon differencePolygons(Polygon p1, Polygon p2);
+
+/* 
+ * Find if the polygon poly contains the point p
+ * poly : a non trivial polygon (Not reducted to a line)
+ * p : the point we want to know if he is inside the polygon
+ * Return a boolean value : true if the point is inside the polygon, false otherwise
+ */
 Bool containsPoint(Polygon poly, Point p);
 
+Status containsPolygon(Polygon ref , Polygon poly);
 
-void printPoint(Point pt);
-void printPolygon(Polygon);
+Polygon centralSymetry(Polygon poly, Point p);
+
+Polygon rotatePolygon(Polygon poly, Point p, float angle);
+
+Polygon scalePolygon(Polygon poly, float factor);
+
+Polygon translatePolygon(Polygon poly, Point start, Point stop);
+
+Polygon convexHullPolygon(Polygon poly);
+
+void printPoint(Point p);
+
+void printPolygon(Polygon poly);
 
 /*
  *
@@ -94,7 +130,6 @@ Bool isEmpty(Polygon poly);
 
 void isTrue(Bool b);
 
-Polygon unionPolygons(Polygon p1, Polygon p2);
 
 
 
