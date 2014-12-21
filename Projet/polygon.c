@@ -295,7 +295,6 @@ float max(float a, float b)
 }
 
 
-
 Bool  equals(float a, float b)
 {
 	float eps;
