@@ -93,27 +93,54 @@ Polygon removePoint(Polygon poly, int place)
 /* De post'it
 Polygon unionPolygons (Polygon p1, Polygon p2)
 {
-	if (isEmpty(p1) and isEmpty(p2))
+	Status Temp;
+	int i=0;
+	if (isEmpty(p1) && isEmpty(p2))
     {
         return p1;
     }
-    else
-    {
-        if (isEmpty(p1))
+    else if (isEmpty(p1))
         {
             return p2;
         }
-        else
-        {
-            if (isEmpty(p2))
+        else if (isEmpty(p2))
             {
                 return p1;
             }
             else
             {
+				p=createPolygon();
+				Temp=containsPolygon(p1,p2);
+				if (Temp==OUTSIDE)
+				{
+					return p;
+				}
+				else if (Temp==INSIDE || Temp==EQUAL)
+					{
+						return p1;
+					}
+					else if(Temp==ENCLOSING)
+						{
+							return p2;
+						}
+						else
+						{
+							Elt* Pelem;
+							Pelem=p1.head;
+							while(containsPoint(p2,Pelem->value))
+							{
+								Pelem=Pelem->next;
+							}
+							addPoint(p,Pelem->value);
+							while(i!=p1.size)
+							{
+								i=i+1;
+								Pelem=Pelem->next
+								if(in
+									
+
+
 */
-
-
 Polygon intersectionPolygons(Polygon p1, Polygon p2);
 
 Polygon exclusiveORPolygons(Polygon p1, Polygon p2);
