@@ -277,25 +277,6 @@ char *toString(Polygon poly)
 
 /* Not asked functions */
 
-/*
-   Bool isConvexPoints(Polygon poly, Elt *elem)
-   {
-   if(elem == NULL || elem.prev == elem.next)
-   return true;
-   else
-   {
-
- * Si le milieu entre prev et next est du coté opposé à la normale
- * Alors le polygone n'est pas convexe en ce point => return TRUE
- * Sinon, il est convexe => return FALSE
-
- }
- }
-
- */
-
-
-
 float min(float a, float b)
 {
 	if(a<b)
