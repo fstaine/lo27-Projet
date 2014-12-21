@@ -30,10 +30,12 @@ typedef struct{
 
 /* Status enum, for the containsPolygon function */
 typedef enum{
+	INSIDE,
 	OUTSIDE,
 	INTERSECT,
 	ENCLOSING,
-	EQUAL
+	EQUAL,
+	ELSE
 }Status;
 
 /* Boolean structure */
