@@ -327,29 +327,47 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 	int a,b,c,d;
 	Point Temp;
 	/*creation of the straights in function of the points*/
-	if (pt1.x==pt2.x)
+	if (pt1.x!=pt2.x)
 	{
-		a=pt1.x;
+		a=(pt1.y-pt2.y)/(pt1.x-pt2.x);
+		b=pt1.y-a*pt1.x;
 	}
-	else
-	{
-		a=pt1.y-pt2.y)/(pt1.x-pt2.x);
-	}
-	if (pt3.x==pt4.x)
-	{
-		c=pt3.x;
-	}
-	else
+	if (pt3.x!=pt4.x)
 	{
 		c=(pt3.y-pt4.y)/(pt3.x-pt4.x);
+		d=pt3.y-c*pt3.x;
 	}
 	
-	b=pt1.y-a*pt1.x;
-	d=pt3.y-c*pt3.x;
-	if( equals(a,c) && equals(b,d))//Cas droites confondues ou parallèles
+	if( equals(a,c) && equals(b,d))//Cas droites confondues et parallèles
 	{
 		Temp.x=NAN;
 		Temp.y=NAN;
+	}
+	else if (pt1.x==pt2.x)
+	{
+		if(c!=0)
+		{
+			Temp.x=pt1.x
+			Temp.y=(pt1.x-d)/c;
+		}
+		else
+		{
+			Temp.x=b;
+			Temp.y=d;
+		}
+	}
+	else if (pt3.x==pt4.x)
+	{
+		if(a!=0)
+		{
+			Temp.x=pt3.x;
+			Temp.y=(pt3.x-b)/a;
+		}
+		else
+		{
+			Temp.x=d;
+			Temp.y=b
+		}
 	}
 	else
 	{
