@@ -324,7 +324,7 @@ void isTrue(Bool b)
 
 Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 {
-	int a,b,c,d;
+	float a,b,c,d;
 	Point Temp;
 	/*creation of the straights in function of the points*/
 	if (pt1.x!=pt2.x)
@@ -347,13 +347,13 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 	{
 		if(c!=0)
 		{
-			Temp.x=pt1.x
+			Temp.x=pt1.x;
 			Temp.y=(pt1.x-d)/c;
 		}
 		else
 		{
-			Temp.x=b;
-			Temp.y=d;
+			Temp.x=pt1.x;
+			Temp.y=pt4.y;
 		}
 	}
 	else if (pt3.x==pt4.x)
@@ -365,8 +365,8 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 		}
 		else
 		{
-			Temp.x=d;
-			Temp.y=b
+			Temp.x=pt3.x;
+			Temp.y=pt2.y;
 		}
 	}
 	else
