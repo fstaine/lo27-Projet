@@ -6,11 +6,8 @@
 #include <unistd.h>
 \**********************/
 
-
 #define POS(x,y) printf("\033[%d;%dH",(int)x,(int)y);  // Move to the x,y position
 #define CLEAR() printf("\033[2J\033[0;0H");
-
-
 
 /* Types */
 typedef struct{
@@ -48,8 +45,6 @@ typedef enum {
 /**********************\
  * Provided Functions *
 \**********************/
-
-
 
 /*
  * Allocate the memory for a Point structure and fill x and y
@@ -112,21 +107,13 @@ void printPolygon(Polygon poly);
 char *toString(Polygon poly);
 /* */
 
-
-
-
 /* Others functions : */
-
 
 float min(float a, float b);
 float max(float a, float b);
 Bool equals(float a, float b);
 
-
 Bool isEmpty(Polygon poly);
-
-
-
 
 void isTrue(Bool b);
 
