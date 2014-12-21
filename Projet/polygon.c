@@ -1,3 +1,4 @@
+
 #include <polygon.h>
 
 Point createPoint(float x, float y) /* Must change to double precision */
@@ -9,7 +10,7 @@ Point createPoint(float x, float y) /* Must change to double precision */
 }
 
 Polygon createPolygon()
-{
+{	
 	Polygon poly;
 	poly.size = 0;
 	poly.head = NULL;
@@ -86,61 +87,137 @@ Polygon removePoint(Polygon poly, int place)
 	free(toFree);
 	return poly;
 }
-/*
-Bool containsPolygon(const Polygon poly, Point p)
+
+
+
+/* De post'it
+Polygon unionPolygons (Polygon p1, Polygon p2)
 {
-	Elt *start, *end;
-	Point p1, p2;
-	start = poly.head;
-	end = poly.head->next;
-	do
-	{
-		p1 = start->value;
-		p2 = end->value;
-		// Calucul du vecteur normal DANS LA BONNE DIRECTION (vers le centre)
-		// Regarder si le point est du mauvais coté vecteur normal
-		// 	Arrèt du process
-		// Sinon
-		// 	Continue le process
-	}
-	while(start != poly.head);
-}
+	if (isEmpty(p1) and isEmpty(p2))
+    {
+        return p1;
+    }
+    else
+    {
+        if (isEmpty(p1))
+        {
+            return p2;
+        }
+        else
+        {
+            if (isEmpty(p2))
+            {
+                return p1;
+            }
+            else
+            {
 */
+
+
+Polygon intersectionPolygons(Polygon p1, Polygon p2);
+
+Polygon exclusiveORPolygons(Polygon p1, Polygon p2);
+
+Polygon differencePolygons(Polygon p1, Polygon p2);
+
 
 
 Bool containsPoint(const Polygon poly, Point p)
 {
 	int i;
 	float a,b,xIntersect;
-	/*Vector v;*/
 	Elt *start,*stop;
 	Bool contains;
-
-	contains = false;
-
-	start = poly.head;
-	for(i=0;i<poly.size;i++)
+	if(isEmpty(poly))
 	{
-		stop = start->next;
-		a = (stop->value.y - start->value.y) / (stop->value.x - start->value.x);
-		b = stop->value.y - a*start->value.x;
-		xIntersect = (p.x - b)/a;
-		printf("xIntersect = %f\n",xIntersect);
-		if(xIntersect > min(start->value.x,stop->value.x) && xIntersect < max(start->value.x,stop->value.x)/* && xIntersect > p.x && !equals(stop->value.x, start->value.x)*/)
-		{/* les demi-droite et segments se coisent */
-			printf("Test : contains\n");
-			contains = !contains;
-		}
-		start = start->next;
+		return false;
 	}
-	return contains;
+	else
+	{
+		contains = false;
+		start = poly.head;
+		for(i=0;i<poly.size;i++)
+		{/* For each segment in the polygon : */
+			stop = start->next;
+			if(equals(p.x,start->value.x) && equals(p.y, start->value.y))
+			{/* If the point p equals a point of the polygon, return true */
+				return true;
+			}
+			else if(equals(start->value.x,stop->value.x))
+			{/* if the segment is vertical  */
+				if(!equals(start->value.y,stop->value.y) && p.x<start->value.x && p.y<max(start->value.y, stop->value.y) && p.y>min(start->value.y,stop->value.y))
+				{/*if the point p is on the left of the segment, and the intersection between the horizontal line passing by p and the line passing py the segment is inside the segment ... */
+					contains = !contains;
+				}
+			}
+			else
+			{
+				a = (stop->value.y - start->value.y) / (stop->value.x - start->value.x);
+				b = start->value.y - a*start->value.x; 
+				xIntersect = (p.y - b)/a;
+				if(xIntersect >= min(start->value.x,stop->value.x) && xIntersect < max(start->value.x,stop->value.x) && xIntersect > p.x && !equals(stop->value.x, start->value.x))
+				{/* les demi-droite et segments se coisent */
+					contains = !contains;
+				}
+			}
+			start = start->next;
+		}
+		return contains;
+	}
 }
 
-/*
-Polygon convexhull(Polygon poly)
-{
 
-}*/
+
+Status containsPolygon(Polygon ref , Polygon poly);
+
+Polygon centralSymetry(Polygon poly, Point p);
+
+Polygon rotatePolygon(Polygon poly, Point p, float angle);
+
+Polygon scalePolygon(Polygon poly, float factor);
+
+Polygon translatePolygon(Polygon poly, Point start, Point stop);
+
+Polygon convexHullPolygon(Polygon poly);
+
+void printPoint(Point p)
+{
+	POS(p.x,p.y);
+	printf("*");
+}
+
+
+/*
+ * Print a polygon with the same shape as poly on the terminal
+ * poly : The input polygon we want to print
+ */
+void printPolygon(Polygon poly)
+{
+	int line, col,i,j;
+	Point p,p2;
+	
+	/* Finding the number of line - Collums : */
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	line = w.ws_row;
+	col = w.ws_col;
+	CLEAR();
+	for(i=0;i<line;i++)
+	{
+		for(j=0;j<col;j++)
+		{
+			if( containsPoint(poly,(p=createPoint(j+0.1,i+0.1))) )
+			{
+				p2.x = p.y;
+				p2.y = p.x;
+				printPoint(p2);
+			}
+		}
+	}
+	POS(line,0);
+	getchar();
+	CLEAR();
+}
 
 char *toString(Polygon poly)
 {
@@ -163,7 +240,7 @@ char *toString(Polygon poly)
 		}
 		for(i=0;i<poly.size-1;i++)
 		{
-			str += sprintf(str,"[%f,%f],",(float)elt->value.x,(float)elt->value.y) -1;/* /!\ double precision */
+			str += sprintf(str,"[%f,%f],",(float)elt->value.x,(float)elt->value.y);/* /!\ double precision */
 			elt = elt->next;
 		}
 		str += sprintf(str, "[%f,%f]]",(float)elt->value.x,(float)elt->value.y) -1;
@@ -174,21 +251,21 @@ char *toString(Polygon poly)
 /* Not asked functions */
 
 /*
-Bool isConvexPoints(Polygon poly, Elt *elem)
-{
-	if(elem == NULL || elem.prev == elem.next)
-		return true;
-	else
-	{
+   Bool isConvexPoints(Polygon poly, Elt *elem)
+   {
+   if(elem == NULL || elem.prev == elem.next)
+   return true;
+   else
+   {
 
-		* Si le milieu entre prev et next est du coté opposé à la normale
-		 * Alors le polygone n'est pas convexe en ce point => return TRUE
-		 * Sinon, il est convexe => return FALSE
+ * Si le milieu entre prev et next est du coté opposé à la normale
+ * Alors le polygone n'est pas convexe en ce point => return TRUE
+ * Sinon, il est convexe => return FALSE
 
-	}
-}
+ }
+ }
 
-*/
+ */
 
 
 
@@ -238,24 +315,4 @@ void isTrue(Bool b)
 		printf("False\n");
 }
 
-Polygon unionPolygons (Polygon p1, Polygon p2)
-{
-	if (isEmpty(p1) and isEmpty(p2))
-    {
-        return p1;
-    }
-    else
-    {
-        if (isEmpty(p1))
-        {
-            return p2;
-        }
-        else
-        {
-            if (isEmpty(p2))
-            {
-                return p1;
-            }
-            else
-            {
 
