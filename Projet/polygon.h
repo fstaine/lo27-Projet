@@ -55,13 +55,13 @@ typedef enum {
  * y : double, the coordonate y of the point
  * return a point with the coordonates (x,y)
  */
-Point createPoint(float x, float y);
+Point createPoint(float x, float y);//OK
 
 /*
  * Create an empty Polygon
  * Return the empty Polygon
  */
-Polygon createPolygon();
+Polygon createPolygon();//OK
 
 /*
  * Add a point in the polygon poly
@@ -69,9 +69,9 @@ Polygon createPolygon();
  * pt : a pointer on the point to add in poly
  * return the new version of the Polygon poly
  */
-Polygon addPoint(Polygon poly, Point pt);
+Polygon addPoint(Polygon poly, Point pt);//OK
 
-Polygon removePoint(Polygon poly, int nb);
+Polygon removePoint(Polygon poly, int nb);//OK
 
 Polygon unionPolygons(Polygon p1, Polygon p2);
 Polygon intersectionPolygons(Polygon p1, Polygon p2);
@@ -84,23 +84,23 @@ Polygon differencePolygons(Polygon p1, Polygon p2);
  * p : the point we want to know if he is inside the polygon
  * Return a boolean value : true if the point is inside the polygon, false otherwise
  */
-Bool containsPoint(Polygon poly, Point p);
+Bool containsPoint(Polygon poly, Point p);//OK
 
-Status containsPolygon(Polygon ref , Polygon poly);
+Status containsPolygon(Polygon ref , Polygon poly);//OK
 
-Polygon centralSymetry(Polygon poly, Point p);
+Polygon centralSymetry(Polygon poly, Point p);//OK
 
-Polygon rotatePolygon(Polygon poly, Point pt, float angle);
+Polygon rotatePolygon(Polygon poly, Point pt, float angle);//OK
 
-Polygon scalePolygon(Polygon poly, float factor);
+Polygon scalePolygon(Polygon poly, float factor);//OK
 
-Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);
+Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);//OK
 
-Polygon convexHullPolygon(Polygon poly);
+Polygon convexHullPolygon(Polygon poly);//OK
 
-void printPoint(Point p);
+void printPoint(Point p);//OK
 
-void printPolygon(Polygon poly);
+void printPolygon(Polygon poly);//OK
 
 /*
  *
