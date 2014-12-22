@@ -395,23 +395,108 @@ Status containsPolygon(Polygon poly1, Polygon poly2)
 	}
 }
 
+Polygon centralSymmetry(Polygon poly, Point pt)
+{
+	int i;
+	Elt *elem;
+	elem = poly.head;
+	for(i=0;i<poly.size;i++)
+	{
+		elem->value.x = 2*pt.x - elem->value.x
+		elem->value.y = 2*pt.y - elem->value.y
+		elem = elem->next;
+	}
+}
 
-Polygon centralSymetry(Polygon poly, Point p);
+Polygon rotatePolygon(Polygon poly, Point pt, float angle)
+{
+	float x;
+	Elt*Temp;
+	Temp=poly.head;
+	angle=angle*180/PI;
+	for(i=1;i<=poly.size;i++)
+	{
+		x=cos(angle)*(Temp->value.x-pt.x)-sin(angle)*(Temp->value.y-pt.y)+pt.x;
+		Temp->value.y=cos(angle)*(Temp->value.x-pt.x)+sin(angle)*(Temp->value.y-pt.y)+pt.y;
+		Temp->value.x=x;
+		Temp=Temp->next;
+	}
+	return Poly;
+}
 
-Polygon rotatePolygon(Polygon poly, Point p, float angle);
+Polygon scalePolygon(Polygon poly, float factor)
+{
+	int i;
+	Elt*Temp;
+	Temp=poly.head;
+	for(i=1;i<=poly.size;i++)
+	{
+		Temp->value.x=Temp->value.x*factor;
+		Temp->value.y=Temp->value.y*factor;
+		Temp=Temp->next;
+	}
+	return Poly;
+}
 
-Polygon scalePolygon(Polygon poly, float factor);
+Polygon translatePolygon (Polygon poly, Point pt1, Point pt2)
+{
+	float x,y;
+	x=pt1.x-pt2.x;
+	y=pt1.y-pt2.y;
+	Elt*Temp;
+	Temp=poly.head;
+	for(i=1;i<=poly.size;i++)
+	{
+		Temp->value.x=Temp->value.x+x;
+		Temp->value.y=Temp->value.y+y;
+		Temp=Temp->next;
+	}
+	return poly;	
+}
 
-Polygon translatePolygon(Polygon poly, Point start, Point stop);
+Polygon convexHull(Polygon poly)
+{
+	int i;
+	Point mid;
+	Elt *elem;
+	elem = poly.head;
+	Polygon convex;
+	convex = createPolygon();
+	Bool ok;
+	elem = poly.head;
+	for(i=0;i<poly.size;i++)
+	{
+		convex = addPoint(convex, elem->value);
+		elem = elem->next;
+	}
+	do
+	{
+		ok = true;
+		for(i=1;i<convex.size+1;i++)
+		{
+			min.x = (elem->value.x + elem-next->value)/2;
+			min.y = (elem->value.y + elem->next->value)/2;
+			if(pointBelongstoS(elem->value,elem->next->next->value,elem->next->value))
+			{
+				convex = removePoint(convex, i);
 
-Polygon convexHullPolygon(Polygon poly);
+			}
+			else if(!containsPoint(convex, mid))
+			{
+				convex = removePoint(convex, i);
+				ok = false;
+			}
+			elem = elem->next;
+		}
+	}
+	while(ok = false)
+}
 
 void printPoint(Point p)
 {
 	POS(p.x,p.y);
 	printf("*");
 }
-
 
 /*
  * Print a polygon with the same shape as poly on the terminal
@@ -625,51 +710,6 @@ void printStatus(Status stat)
 	}
 }
 
-Polygon scalePolygon(Polygon poly, float factor)
-{
-	int i;
-	Elt*Temp;
-	Temp=poly.head;
-	for(i=1;i<=poly.size;i++)
-	{
-		Temp->value.x=Temp->value.x*factor;
-		Temp->value.y=Temp->value.y*factor;
-		Temp=Temp->next;
-	}
-	return Poly;
-}
-
-Polygon translatePolygon (Polygon poly, Point pt1, Point pt2)
-{
-	float x,y;
-	x=pt1.x-pt2.x;
-	y=pt1.y-pt2.y;
-	Elt*Temp;
-	Temp=poly.head;
-	for(i=1;i<=poly.size;i++)
-	{
-		Temp->value.x=Temp->value.x+x;
-		Temp->value.y=Temp->value.y+y;
-		Temp=Temp->next;
-	}
-	return poly;	
-}
-
-Polygon rotatePolygon(Polygon poly, Point pt, float angle)
-{
-	float x;
-	Elt*Temp;
-	Temp=poly.head;
-	angle=angle*180/PI;
-	for(i=1;i<=poly.size;i++)
-	{
-		x=cos(angle)*(Temp->value.x-pt.x)-sin(angle)*(Temp->value.y-pt.y)+pt.x;
-		Temp->value.y=cos(angle)*(Temp->value.x-pt.x)+sin(angle)*(Temp->value.y-pt.y)+pt.y;
-		Temp->value.x=x;
-		Temp=Temp->next;
-	}
-	return Poly;
-}
 
 
 
