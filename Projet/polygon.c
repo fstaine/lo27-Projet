@@ -94,7 +94,7 @@ Polygon removePoint(Polygon poly, int place)
 Polygon unionPolygons (Polygon p1, Polygon p2)
 {
 	Status Temp;
-	int i=0;
+	int i=0,j=0;
 	if (isEmpty(p1) && isEmpty(p2))
     {
         return p1;
@@ -125,18 +125,23 @@ Polygon unionPolygons (Polygon p1, Polygon p2)
 						}
 						else
 						{
-							Elt* Pelem;
-							Pelem=p1.head;
-							while(containsPoint(p2,Pelem->value))
+							Elt* Pelem1,Pelem2;
+							Pelem1=p1.head;
+							Pelem2=p2.head;
+							while(containsPoint(p2,Pelem1->value))
 							{
-								Pelem=Pelem->next;
+								Pelem1=Pelem1->next;
 							}
-							addPoint(p,Pelem->value);
+							addPoint(p,Pelem1->value);
 							while(i!=p1.size)
 							{
 								i=i+1;
-								Pelem=Pelem->next
-								if(in
+								Pelem1=Pelem1->next;
+								while (j!=p2.size)
+								{
+									j=j+1;
+									Pelem2=Pelem2->next;
+									if(intersectionStraights(Pelem1->prev,Pelem1,Pelem2->prev,Pelem2)!=NAN
 									
 
 
@@ -343,20 +348,20 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 		Temp.x=NAN;
 		Temp.y=NAN;
 	}
-	else if (pt1.x==pt2.x)
+	else if (pt1.x==pt2.x) // Cas d'une droite verticale
 	{
 		if(c!=0)
 		{
 			Temp.x=pt1.x;
 			Temp.y=(pt1.x-d)/c;
 		}
-		else
+		else //Cas d'une droite verticale + horizontale
 		{
 			Temp.x=pt1.x;
 			Temp.y=pt4.y;
 		}
 	}
-	else if (pt3.x==pt4.x)
+	else if (pt3.x==pt4.x)// Cas inverse
 	{
 		if(a!=0)
 		{
@@ -369,7 +374,7 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 			Temp.y=pt2.y;
 		}
 	}
-	else
+	else// Cas général
 	{
 		Temp.x=(d-b)/(a-c);
 		Temp.y=a*Temp.x+b;
