@@ -129,6 +129,7 @@ float normPoints(Point p1, Point p2);
 
 Point replacePoints(Point p1, Point p2);
 
+
 void printStatus(Status stat);
 
 
