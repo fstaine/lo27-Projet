@@ -90,7 +90,7 @@ Status containsPolygon(Polygon ref , Polygon poly);
 
 Polygon centralSymetry(Polygon poly, Point p);
 
-Polygon rotatePolygon(Polygon poly, Point p, float angle);
+Polygon rotatePolygon(Polygon poly, Point pt, float angle);
 
 Polygon scalePolygon(Polygon poly, float factor);
 
