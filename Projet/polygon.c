@@ -650,11 +650,26 @@ Polygon translatePolygon (Polygon poly, Point pt1, Point pt2)
 	{
 		Temp->value.x=Temp->value.x+x;
 		Temp->value.y=Temp->value.y+y;
+		Temp=Temp->next;
 	}
 	return poly;	
 }
 
-
+Polygon rotatePolygon(Polygon poly, Point pt, float angle)
+{
+	float x;
+	Elt*Temp;
+	Temp=poly.head;
+	angle=angle*180/PI;
+	for(i=1;i<=poly.size;i++)
+	{
+		x=cos(angle)*(Temp->value.x-pt.x)-sin(angle)*(Temp->value.y-pt.y)+pt.x;
+		Temp->value.y=cos(angle)*(Temp->value.x-pt.x)+sin(angle)*(Temp->value.y-pt.y)+pt.y;
+		Temp->value.x=x;
+		Temp=Temp->next;
+	}
+	return Poly;
+}
 
 
 
