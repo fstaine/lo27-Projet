@@ -94,7 +94,7 @@ Polygon rotatePolygon(Polygon poly, Point p, float angle);
 
 Polygon scalePolygon(Polygon poly, float factor);
 
-Polygon translatePolygon(Polygon poly, Point start, Point stop);
+Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);
 
 Polygon convexHullPolygon(Polygon poly);
 

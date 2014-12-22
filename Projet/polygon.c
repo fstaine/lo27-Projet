@@ -629,17 +629,30 @@ Polygon scalePolygon(Polygon poly, float factor)
 {
 	int i;
 	Elt*Temp;
-	Temp=Poly.head;
+	Temp=poly.head;
 	for(i=1;i<=poly.size;i++)
 	{
-		Temp->value.x*factor;
-		Temp->value.y*factor;
+		Temp->value.x=Temp->value.x*factor;
+		Temp->value.y=Temp->value.y*factor;
 		Temp=Temp->next;
 	}
 	return Poly;
 }
 
-
+Polygon translatePolygon (Polygon poly, Point pt1, Point pt2)
+{
+	float x,y;
+	x=pt1.x-pt2.x;
+	y=pt1.y-pt2.y;
+	Elt*Temp;
+	Temp=poly.head;
+	for(i=1;i<=poly.size;i++)
+	{
+		Temp->value.x=Temp->value.x+x;
+		Temp->value.y=Temp->value.y+y;
+	}
+	return poly;	
+}
 
 
 
