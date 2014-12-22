@@ -90,11 +90,13 @@ Polygon removePoint(Polygon poly, int place)
 
 
 
-/* De post'it
+/*De post'it
 Polygon unionPolygons (Polygon p1, Polygon p2)
 {
 	Status Temp;
+	Point PTemp,PFinal;
 	int i=0,j=0;
+	float norme=-1;
 	if (isEmpty(p1) && isEmpty(p2))
     {
         return p1;
@@ -133,19 +135,56 @@ Polygon unionPolygons (Polygon p1, Polygon p2)
 								Pelem1=Pelem1->next;
 							}
 							addPoint(p,Pelem1->value);
-							while(i!=p1.size)
+							do
 							{
-								i=i+1;
-								Pelem1=Pelem1->next;
-								while (j!=p2.size)
+								PTemp=intersectionStraights(Pelem1->value,Pelem1->next->value,Pelem2->value,Pelem2->next->value);
+								j=0;
+								norme=-1;
+								while(j!=p2.size)
 								{
-									j=j+1;
-									Pelem2=Pelem2->next;
-									if(intersectionStraights(Pelem1->prev,Pelem1,Pelem2->prev,Pelem2)!=NAN
-									
+									if(((Pelem1->value.x <= PTemp.x && PTemp.x <= Pelem1->next->value.x) || (Pelem1->value.y <= PTemp.y && PTemp.y <= Pelem1->value.y)) && PTemp.x!=NAN)
+									{
+										if(normPoints(Pelem1->value,PTemp)<norme || norme==-1)
+										{
+											norme=normPoints(Pelem1->value,PTemp);
+											PFinal=PTemp;
+										}	
+									}
+								}
+								
+							while();// point trouvé à la fin de la procédure différents du point de départ 
+							/*while(i!=p1.size)
+							{
+								if (containsPoint(p2,Pelem1->value)==FALSE)
+								{
+									PFinal.x=Pelem1->value.x;
+									PFinal.y=Pelem1->value.y;
+								}
+								else
+								{
+									j=0;
+									while (j!=p2.size)
+									{
+										j=j+1;
+										Pelem2=Pelem2->next;
+										PTemp=intersectionStraights(Pelem1->prev->value,Pelem1->value,Pelem2->prev->value,Pelem2->value);
+										if(PTemp!=NAN)
+										{
+											if (normPoints(Pelem1->prev->value,PTemp)<norme || norme==0)
+											{
+												norme=normPoints(Pelem1->prev,PTemp);
+												PFinal.x=PTemp.x;
+												PFinal.y=PTemp.y;
+											}	
+										}	
+									}
+								}
+									addPoint(p,PFinal);
+									i=i+1;
+									Pelem1=Pelem1->next;
+							}*/
 
-
-*/
+								
 Polygon intersectionPolygons(Polygon p1, Polygon p2);
 
 Polygon exclusiveORPolygons(Polygon p1, Polygon p2);
@@ -374,10 +413,40 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 			Temp.y=pt2.y;
 		}
 	}
-	else// Cas général
+	else // Cas général
 	{
 		Temp.x=(d-b)/(a-c);
 		Temp.y=a*Temp.x+b;
 	}
 	return Temp;
 }
+
+float normPoints(Point p1, Point p2)
+{
+	return sqrt((p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y));
+}
+
+Bool pointBelongsToS(Point pt1, Point pt2, Point pt)
+{
+	if (pt.x <= max(pt1.x,pt2.x) && pt.x >= min(pt1.x,pt2.x) && pt.y <= max(pt1.y,pt2.y) && pt.y >= min(pt1.y,pt2.y))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

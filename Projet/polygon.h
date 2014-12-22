@@ -121,9 +121,9 @@ void isTrue(Bool b);
 
 Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4);
 
+float normPoints(Point p1, Point p2);
 
-
-
+Point replacePoints(Point p1, Point p2);
 
 
 
