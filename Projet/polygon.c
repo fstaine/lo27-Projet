@@ -625,7 +625,19 @@ void printStatus(Status stat)
 	}
 }
 
-
+Polygon scalePolygon(Polygon poly, float factor)
+{
+	int i;
+	Elt*Temp;
+	Temp=Poly.head;
+	for(i=1;i<=poly.size;i++)
+	{
+		Temp->value.x*factor;
+		Temp->value.y*factor;
+		Temp=Temp->next;
+	}
+	return Poly;
+}
 
 
 
