@@ -1,4 +1,4 @@
-
+#include <math.h>
 #include <polygon.h>
 
 Point createPoint(float x, float y) /* Must change to double precision */
@@ -153,7 +153,7 @@ Polygon unionPolygons (Polygon p1, Polygon p2)
 								}
 								
 							while();// point trouvé à la fin de la procédure différents du point de départ 
-							/*while(i!=p1.size)
+							while(i!=p1.size)
 							{
 								if (containsPoint(p2,Pelem1->value)==FALSE)
 								{
@@ -241,7 +241,7 @@ Bool containsPoint(const Polygon poly, Point p)
 
 Status containsPolygon(Polygon poly1, Polygon poly2)
 {
-	int i;
+	int i,j;
 	Elt *el1, *el2;
 	Bool inside, outside, enclosing, equals;
 	Point intersect;
@@ -279,7 +279,7 @@ Status containsPolygon(Polygon poly1, Polygon poly2)
 		{
 			for(j=0;j<poly2.size;j++)
 			{
-				el2 = poly.head;
+				el2 = poly2.head;
 				intersect = intersectionStraights(el1->value, el1->next->value, el2->value,el2->next->value);/* intersection semgent */
 				if(pointBelongsToS(el1->value, el1->next->value, intersect) && pointBelongsToS(el2->value, el2->next->value, intersect))
 				{/* Si il y a un point d'intersection dans les segments */
@@ -578,7 +578,10 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 
 float normPoints(Point p1, Point p2)
 {
-	return sqrt((p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y));
+	float res;
+	res = (p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y);
+	res = sqrt(res);
+	return res;
 }
 
 Bool pointBelongsToS(Point pt1, Point pt2, Point pt)

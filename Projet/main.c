@@ -1,8 +1,7 @@
 #include <polygon.h>
 #include <string.h>
-#include <math.h>
 
-//#define TEST
+#define TEST
 
 #define REVERSE printf("\033[7m")
 #define NORMAL printf("\033[0m")
@@ -10,13 +9,11 @@
 #ifdef TEST
 int main(int argc, char *argv[])
 {
-	Point p1,p2;
-	p1.x = 1;
-	p1.y = 2;
-	p2.x = 3;
-	p2.y = 4;
-	p2 = p1;
-	printf("%f, %f\n",p2.x,p2.y);
+	Point p1, p2, intersect;
+	p1 = createPoint(6,1);
+	p2 = createPoint(8,3);
+	intersect = createPoint(7,1);
+	isTrue(pointBelongsToS(p1, p2, intersect));
 	return 0;
 }
 #else /* Test undefined */

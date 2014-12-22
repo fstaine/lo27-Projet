@@ -28,7 +28,7 @@ run: $(TARGET)
 #Generating the executable
 $(TARGET): $(EXESOURCEOFILE) $(LIBTARGET)
 	@echo "\n Generating the executable " $@
-	$(CXX) $(EXESOURCEOFILE) -l$(LIBTARGET2) $(LIBSDIR) -o $(TARGET)
+	$(CXX) $(EXESOURCEOFILE) -l$(LIBTARGET2) $(LIBSDIR) -o $(TARGET) -lm
 
 #Generating the library binary code
 $(LIBTARGET): $(LIBSOURCEOFILE)

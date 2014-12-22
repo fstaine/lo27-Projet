@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
+#include <string.h>
 
-/* For printPolygon : *\
+/* For printPolygon : */
 #include <sys/ioctl.h>
 #include <unistd.h>
-\**********************/
 
 #define POS(x,y) printf("\033[%d;%dH",(int)x,(int)y);  // Move to the x,y position
 #define CLEAR() printf("\033[2J\033[0;0H");
@@ -124,6 +125,14 @@ Bool isEmpty(Polygon poly);
 void isTrue(Bool b);
 
 Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4);
+/*
+ * Check if the point belongs to the rectangle formed by it's diagonal (formed by the two points)
+ * pt1 : (Point) an extremum of the segment
+ * pt2 : (Point) the other extremum of the segment
+ * pt : (Point) the point belonging to the straights and we want to know if he is in the segment
+ * Return : (Bool) true if the point pt is inside the segment, false otherwise
+ */
+Bool pointBelongsToS(Point pt1, Point pt2, Point pt);
 
 float normPoints(Point p1, Point p2);
 
