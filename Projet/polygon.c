@@ -90,13 +90,14 @@ Polygon removePoint(Polygon poly, int place)
 
 
 
-/*De post'it
+//De post'it
 Polygon unionPolygons (Polygon p1, Polygon p2)
 {
 	Status Temp;
 	Point PTemp,PFinal;
 	int i=0,j=0;
 	float norme=-1;
+	Elt* Pelem1,Pelem2,Pelem3;
 	if (isEmpty(p1) && isEmpty(p2))
     {
         return p1;
@@ -127,7 +128,6 @@ Polygon unionPolygons (Polygon p1, Polygon p2)
 						}
 						else
 						{
-							Elt* Pelem1,Pelem2;
 							Pelem1=p1.head;
 							Pelem2=p2.head;
 							while(containsPoint(p2,Pelem1->value))
@@ -137,23 +137,35 @@ Polygon unionPolygons (Polygon p1, Polygon p2)
 							addPoint(p,Pelem1->value);
 							do
 							{
-								PTemp=intersectionStraights(Pelem1->value,Pelem1->next->value,Pelem2->value,Pelem2->next->value);
+								
 								j=0;
 								norme=-1;
 								while(j!=p2.size)
 								{
-									if(((Pelem1->value.x <= PTemp.x && PTemp.x <= Pelem1->next->value.x) || (Pelem1->value.y <= PTemp.y && PTemp.y <= Pelem1->value.y)) && PTemp.x!=NAN)
+									PTemp=intersectionStraights(Pelem1->value,Pelem1->next->value,Pelem2->value,Pelem2->next->value);
+									if(pointBelongsToS(Pelem1->value,Pelem1->next->value,PTemp) && pointBelongsToS(Pelem2->value,Pelem2->next->value,PTemp) && PTemp.x!=NAN &&PTemp.x!=INFINITY)
 									{
-										if(normPoints(Pelem1->value,PTemp)<norme || norme==-1)
+										if((normPoints(Pelem1->value,PTemp)<norme && norme > 0) || norme==-1)
 										{
 											norme=normPoints(Pelem1->value,PTemp);
 											PFinal=PTemp;
 										}	
 									}
+									else if(pointBelongsToS(Pelem1->value,Pelem1->next->value,PTemp)==false || pointBelongsToS(Pelem2->value,Pelem2->next->value,PTemp)==false)
+									{
+										PFinal=Pelem1->next->value;
+									}
+									else if( PTemp.x==NAN)
+									{
+										
+									}	
 								}
-								
-							while();// point trouvé à la fin de la procédure différents du point de départ 
-							while(i!=p1.size)
+								addPoint(p,PFinal);
+								Pelem3=Pelem1;
+								Pelem1=Pelem2;
+								Pelem2=Pelem3;
+							while(equalsPoints(p.head->prev->value,p.head->value)==false && p.size<=2);// point trouvé à la fin de la procédure différents du point de départ 
+							/*while(i!=p1.size)
 							{
 								if (containsPoint(p2,Pelem1->value)==FALSE)
 								{
@@ -537,10 +549,15 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 		d=pt3.y-c*pt3.x;
 	}
 	
-	if( equals(a,c) && equals(b,d))//Cas droites confondues et parallèles
+	if(equals(a,c) && equals(b,d))//Cas droites confondues
 	{
 		Temp.x=NAN;
 		Temp.y=NAN;
+	}
+	else if(equals(a,c))// Cas droites parallèles uniquement
+	{
+		Temp.x=INFINITY;
+		Temp.y=INFINITY;
 	}
 	else if (pt1.x==pt2.x) // Cas d'une droite verticale
 	{
