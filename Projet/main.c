@@ -9,11 +9,32 @@
 #ifdef TEST
 int main(int argc, char *argv[])
 {
-	Point p1, p2, intersect;
-	p1 = createPoint(6,1);
-	p2 = createPoint(8,3);
-	intersect = createPoint(7,1);
-	isTrue(pointBelongsToS(p1, p2, intersect));
+	Polygon poly1, res, poly2,cpy1,cpy2;
+
+	poly1 = createPolygon();
+	poly2 = createPolygon();
+	res = createPolygon();
+
+	poly1 = addPoint(poly1, createPoint(2,2));
+	poly1 = addPoint(poly1, createPoint(5,2));
+	poly1 = addPoint(poly1, createPoint(7,5));
+	poly1 = addPoint(poly1, createPoint(5,8));
+	poly1 = addPoint(poly1, createPoint(2,6));
+	poly1 = addPoint(poly1, createPoint(3,4));
+
+
+	poly2 = addPoint(poly2, createPoint(3,1));
+	poly2 = addPoint(poly2, createPoint(6,4));
+	poly2 = addPoint(poly2, createPoint(5,6));
+	poly2 = addPoint(poly2, createPoint(2,4));
+
+	//res = unionPolygons(poly1, poly2);
+	cpy1 = addIntersectionPoints(poly1, poly2);
+	cpy2 = addIntersectionPoints(poly2, poly1);
+
+	puts(toString(cpy1));
+	puts(toString(cpy2));
+
 	return 0;
 }
 #else /* Test undefined */
@@ -87,13 +108,19 @@ int main (int argc, char *argv[])
 			poly2 = addPoint(poly2, createPoint(4.5,1.5));
 			poly2 = addPoint(poly2, createPoint(4.5,4.5));
 			poly2 = addPoint(poly2, createPoint(1.5,4.5));
-			
+
+			poly2 = createPolygon();
+			poly2 = addPoint(poly2, createPoint(1.5,1.5));
+			poly2 = addPoint(poly2, createPoint(4.5,1.5));
+			poly2 = addPoint(poly2, createPoint(4.5,4.5));
+			poly2 = addPoint(poly2, createPoint(1.5,4.5));
+
 			poly1 = createPolygon();
 			poly1 = addPoint(poly1, createPoint(3,1));
 			poly1 = addPoint(poly1, createPoint(5,3));
 			poly1 = addPoint(poly1, createPoint(3,5));
 			poly1 = addPoint(poly1, createPoint(1,3));
-			
+
 			res = containsPolygon(poly2, poly1);
 			printStatus(res);
 		}

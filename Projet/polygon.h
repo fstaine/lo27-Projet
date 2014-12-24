@@ -12,8 +12,8 @@
 
 /* Types */
 typedef struct{
-	float x;
-	float y;
+	double x;
+	double y;
 }Point;
 
 typedef Point Vector;
@@ -35,8 +35,7 @@ typedef enum{
 	OUTSIDE,
 	INTERSECT,
 	ENCLOSING,
-	EQUAL,
-	ELSE
+	EQUAL
 }Status;
 
 /* Boolean structure */
@@ -55,7 +54,7 @@ typedef enum {
  * y : double, the coordonate y of the point
  * return a point with the coordonates (x,y)
  */
-Point createPoint(float x, float y);//OK
+Point createPoint(double x, double y);//OK
 
 /*
  * Create an empty Polygon
@@ -73,7 +72,7 @@ Polygon addPoint(Polygon poly, Point pt);//OK
 
 Polygon removePoint(Polygon poly, int nb);//OK
 
-Polygon unionPolygons(Polygon p1, Polygon p2);
+Polygon unionPolygons(Polygon poly1, Polygon poly2);
 Polygon intersectionPolygons(Polygon p1, Polygon p2);
 Polygon exclusiveORPolygons(Polygon p1, Polygon p2);
 Polygon differencePolygons(Polygon p1, Polygon p2);
@@ -88,11 +87,11 @@ Bool containsPoint(Polygon poly, Point p);//OK
 
 Status containsPolygon(Polygon ref , Polygon poly);//OK
 
-Polygon centralSymetry(Polygon poly, Point p);//OK
+Polygon centralSymmetry(Polygon poly, Point p);//OK
 
-Polygon rotatePolygon(Polygon poly, Point pt, float angle);//OK
+Polygon rotatePolygon(Polygon poly, Point pt, double angle);//OK
 
-Polygon scalePolygon(Polygon poly, float factor);//OK
+Polygon scalePolygon(Polygon poly, double factor);//OK
 
 Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);//OK
 
@@ -112,11 +111,11 @@ char *toString(Polygon poly);
 
 /* Others functions : */
 
-float min(float a, float b);
+double min(double a, double b);
 
-float max(float a, float b);
+double max(double a, double b);
 
-Bool equals(float a, float b);
+Bool equals(double a, double b);
 
 Bool equalsPoints(Point a, Point b);
 
@@ -134,13 +133,18 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4);
  */
 Bool pointBelongsToS(Point pt1, Point pt2, Point pt);
 
-float normPoints(Point p1, Point p2);
+double normPoints(Point p1, Point p2);
 
 Point replacePoints(Point p1, Point p2);
 
 void printStatus(Status stat);
 
+Bool pointBelongsToPoly(Polygon poly, Point pt);
 
+Polygon freePolygon(Polygon poly);
 
+Polygon addIntersectPoints(Polygon poly1, Polygon poly2);
+
+Elt *findSamePoint(Polygon poly2, Point p);
 
 
