@@ -89,7 +89,7 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 	int i;
 	Status status;
 	Elt *elem1;
-	Polygon unionpoly, cpy1, cpy2,intersect, polyswap;
+	Polygon unionpoly, cpy1, cpy2, intersect, polyswap;
 
 	status = containsPolygon(poly1, poly2);
 	if(isEmpty(poly1))
@@ -116,40 +116,40 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 	{
 		return poly2;
 	}
-	cpy1 = addIntersectPoints(poly1, poly2);
-	cpy2 = addIntersectPoints(poly2, poly1);
-	elem1 = poly1.head;
+	cpy1 = addIntersectionPoints(poly1, poly2);
+	//printf("cpy1 : \n%s\n\n", toString(cpy1));
+
+	cpy2 = addIntersectionPoints(poly2, poly1);
+	//printf("cpy2 : \n%s\n\n", toString(cpy2));
+
+	elem1 = cpy1.head;
+	intersect = createPolygon();
 	for(i=0;i<cpy1.size;i++)
 	{/* Création du polygon avec les intersections */
-		if(pointBelongsToPoly(poly2, elem1->value))
+
+		if(pointBelongsToPoly(cpy2, elem1->value))
 		{
 			intersect = addPoint(intersect, elem1->value);
 		}
 		elem1 = elem1->next;
 	}
-	elem1 = poly1.head;
+	//printf("Intersect :\n%s\n\n",toString(intersect));
+	elem1 = cpy1.head;
 	while(containsPoint(cpy2, elem1->value))
-	{
+	{/* cherche un point à l'extérieur */
 		elem1 = elem1->next;
 	}
-	/* elem1 est à la bonne place pour commenter : en dehors de poly2 */
-	unionpoly = addPoint(unionpoly, elem1->value);
+	/* elem1 est à la bonne place pour commencer : en dehors de poly2 */
+	unionpoly = createPolygon();
 	do
 	{
+		printf("\nDébut de la boucle\n");
 		if(!pointBelongsToPoly(intersect, elem1->value))
-		{
+		{/* si il n'y a pas d'intersection */
+			printf("Pas d'intersection\n");
 			unionpoly = addPoint(unionpoly, elem1->value);
-			elem1 = elem1->next;
-		}
-		else
-		{
-			/* Prendre dans le bon sens */
-			unionpoly = addPoint(unionpoly, elem1->value);
-			elem1 = findSamePoint(poly2, elem1->value);
-			polyswap = cpy1;
-			cpy1 = cpy2;
-			cpy2 = polyswap;
-			if(containsPoint(cpy2,elem1->value) || pointBelongsToPoly(intersect, elem1->next->value))
+			printf("unionpoly : %s\n",toString(unionpoly));
+			if(pointBelongsToPoly(unionpoly,  elem1->next->value))
 			{
 				elem1 = elem1->prev;
 			}
@@ -158,12 +158,34 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 				elem1 = elem1->next;
 			}
 		}
+		else
+		{
+			printf("Intersection en vue !\n");
+			unionpoly = addPoint(unionpoly, elem1->value);
+			printf("unionpoly : %s\n",toString(unionpoly));
+			/* Retrouver le point dans l'autre poly */
+			elem1 = findSamePoint(cpy2, elem1->value);
+			polyswap = cpy1;
+			cpy1 = cpy2;
+			cpy2 = polyswap;
+			if(containsPoint(cpy2,elem1->next->value) || pointBelongsToPoly(intersect, elem1->next->value))
+			{/* Si le point suiant est dans l'autre poly ou si c'est une intersection */
+				printf("Prendre le précédent\n");
+				elem1 = elem1->prev;
+			}
+			else
+			{
+				printf("Prendre le suivant\n");
+				elem1 = elem1->next;
+			}
+		}
+		printf("NextPoint.x = %f, NextPoint.y = %f\n", elem1->value.x, elem1->value.y);
 	}
-	while(unionpoly.head != elem1);
+	while(!equalsPoints(unionpoly.head->value, elem1->value));
 	return unionpoly;
 }
 
-#ifdef YOLOSWAG
+#ifdef DE_POST_IT
 //De post'it
 Polygon unionPolygons (Polygon p1, Polygon p2)
 {
@@ -827,7 +849,7 @@ Polygon freePolygon(Polygon poly)
 	return poly;
 }
 
-Polygon addIntersectPoints(Polygon poly1, Polygon poly2)
+Polygon addIntersectionPoints(Polygon poly1, Polygon poly2)
 {
 	int i,j,nbintersect;
 	double norm, newnorm;
