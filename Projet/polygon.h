@@ -29,6 +29,14 @@ typedef struct{
 	Elt *head;
 }Polygon;
 
+typedef struct EltListPoly {
+	Polygon poly;
+	struct EltListPoly *next;
+}EltList;
+
+typedef EltList* ListPoly;
+
+
 /* Status enum, for the containsPolygon function */
 typedef enum{
 	INSIDE,
@@ -143,8 +151,21 @@ Bool pointBelongsToPoly(Polygon poly, Point pt);
 
 Polygon freePolygon(Polygon poly);
 
-Polygon addIntersectPoints(Polygon poly1, Polygon poly2);
+Polygon copyPolygon(Polygon poly);
+
+Polygon addIntersectionPoints(Polygon poly1, Polygon poly2);
 
 Elt *findSamePoint(Polygon poly2, Point p);
+
+Polygon ajustPolygon(Polygon poly);
+
+
+
+
+
+
+
+
+
 
 

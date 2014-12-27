@@ -13,7 +13,7 @@ LIBSOURCEOFILE = $(LIBSOURCE:=.o)
 
 #Application-related macros
 TARGET = polygon.exe
-EXESOURCE = main
+EXESOURCE = polygonmain
 EXESOURCECFILE = $(EXESOURCE:=.c)
 EXESOURCEOFILE = $(EXESOURCE:=.o)
 
