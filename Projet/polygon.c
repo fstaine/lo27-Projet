@@ -1,6 +1,7 @@
 
 #include <polygon.h>
 
+
 Point createPoint(double x, double y) /* Must change to double precision */
 {
 	Point pt;
@@ -56,24 +57,38 @@ Polygon removePoint(Polygon poly, int place)/* Problem with removePoint */
 	{
 		int i;
 		Elt *elem;
-		elem = poly.head;
-		if(place == 1)
+		if(place>0)
 		{
-			poly.head = poly.head->next;
-		}
-		else if(place>0)
-		{
-			for(i=1;i<place;i++)
+			place %= poly.size;
+			if(place == 1)
+			{
+				elem = poly.head;
+				poly.head = poly.head->next;
+			}
+			else
+			{
+			elem = poly.head->prev;
+			for(i=0;i<place;i++)
 			{
 				elem = elem->next;
+			}
 			}
 		}
 		else if(place<0)
 		{
-			elem = elem->prev;
-			for(i=1;i<-place;i++)
+			place%= place;
+			if(place == 0)
+			{
+				elem = poly.head;
+				poly.head = poly.head->next;
+			}
+			else
+			{
+			elem = poly.head;
+			for(i=0;i>place;i--)
 			{
 				elem = elem->prev;
+			}
 			}
 		}
 		elem->next->prev = elem->prev;
@@ -274,12 +289,15 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 	return intersectionpoly;
 }
 
-Polygon intersectionPolygons(Polygon p1, Polygon p2);
+Polygon exclusiveORPolygons(Polygon p1, Polygon p2)
+{
+	return createPolygon();
+}
 
-Polygon exclusiveORPolygons(Polygon p1, Polygon p2);
-
-Polygon differencePolygons(Polygon p1, Polygon p2);
-
+Polygon differencePolygons(Polygon p1, Polygon p2)
+{
+	return createPolygon();
+}
 
 
 Bool containsPoint(const Polygon poly, Point p)
@@ -497,7 +515,8 @@ Polygon centralSymmetry(Polygon poly, Point pt)/*****************/
 			elem->value.x = 2*pt.x - elem->value.x;
 			elem->value.y = 2*pt.y - elem->value.y;
 			elem = elem->next;
-		}}
+		}
+	}
 	return poly;
 }
 
@@ -540,19 +559,23 @@ Polygon scalePolygon(Polygon poly, double factor)
 
 Polygon translatePolygon (Polygon poly, Point pt1, Point pt2)
 {
-	double x,y;
-	int i;
-	x=pt2.x-pt1.x;
-	y=pt2.y-pt1.y;
-	Elt*Temp;
-	Temp=poly.head;
-	for(i=1;i<=poly.size;i++)
+	if(!isEmpty(poly))
 	{
-		Temp->value.x=Temp->value.x+x;
-		Temp->value.y=Temp->value.y+y;
-		Temp=Temp->next;
+		double x,y;
+		int i;
+
+		x=pt2.x-pt1.x;
+		y=pt2.y-pt1.y;
+		Elt*Temp;
+		Temp=poly.head;
+		for(i=1;i<=poly.size;i++)
+		{
+			Temp->value.x=Temp->value.x+x;
+			Temp->value.y=Temp->value.y+y;
+			Temp=Temp->next;
+		}
 	}
-	return poly;	
+	return poly;
 }
 
 Polygon convexHullPolygon(Polygon poly)/* marche pas si on a un polygone croisée ou un vraiment tordu :'( */
@@ -641,31 +664,29 @@ char *toString(Polygon poly)
 	int i;
 	char *str,*strsave;
 	Elt *elt;
-	if((str = (char *) malloc(sizeof(char)*(20*poly.size) + 2)) == NULL) /* Mem pour la chaine */
+	if(isEmpty(poly))
+	{
+		str = (char *) malloc(sizeof(char)*3);
+		sprintf(str, "[]");
+		return str;
+	}
+	if((str = (char *) malloc(sizeof(char)*(30*poly.size) + 2)) == NULL) /* Mem pour la chaine */
 	{
 		fprintf(stderr, "Allocation error, not enough space in memory !\n");
 		return str;
 	}
 	else
 	{
-		if(isEmpty(poly))
+		strsave = str;
+		str += sprintf(str,"[");
+		elt = poly.head;
+		for(i=0;i<poly.size-1;i++)
 		{
-			sprintf(str, "[]");
-			return str;
+			str += sprintf(str,"[%g,%g],",elt->value.x,elt->value.y);
+			elt = elt->next;
 		}
-		else
-		{
-			strsave = str;
-			str += sprintf(str,"[");
-			elt = poly.head;
-			for(i=0;i<poly.size-1;i++)
-			{
-				str += sprintf(str,"[%f,%f],",elt->value.x,elt->value.y);
-				elt = elt->next;
-			}
-			str += sprintf(str, "[%f,%f]]",elt->value.x,elt->value.y) -1;
-			return strsave;
-		}
+		str += sprintf(str, "[%g,%g]]",elt->value.x,elt->value.y) -1;
+		return strsave;
 	}
 }
 
@@ -692,7 +713,7 @@ double max(double a, double b)
 Bool  equals(double a, double b)
 {
 	double eps;
-	eps = 0.001;
+	eps = 0.0001;
 	if( a-eps < b && b < a+eps)
 		return true;
 	else
@@ -722,7 +743,7 @@ Bool isEmpty(Polygon poly)
 
 void isTrue(Bool b)
 {
-	if(b==true)
+	if(b)
 		printf("True\n");
 	else
 		printf("False\n");
@@ -821,16 +842,23 @@ Bool pointBelongsToPoly(Polygon poly, Point pt)
 {
 	int i;
 	Elt *elem;
-	elem = poly.head;
-	for(i=0;i<poly.size;i++)
+	if(isEmpty(poly))
 	{
-		if(equalsPoints(elem->value, pt))
-		{
-			return true;
-		}
-		elem = elem->next;
+		return false;
 	}
-	return false;
+	else
+	{
+		elem = poly.head;
+		for(i=0;i<poly.size;i++)
+		{
+			if(equalsPoints(elem->value, pt))
+			{
+				return true;
+			}
+			elem = elem->next;
+		}
+		return false;
+	}
 }
 
 Polygon copyPolygon(Polygon poly)
@@ -839,11 +867,14 @@ Polygon copyPolygon(Polygon poly)
 	Elt *elem;
 	Polygon newpoly;
 	newpoly = createPolygon();
-	elem = poly.head;
-	for(i=0;i<poly.size;i++)
+	if(!isEmpty(poly))
 	{
-		newpoly = addPoint(newpoly, elem->value);
-		elem = elem->next;
+		elem = poly.head;
+		for(i=0;i<poly.size;i++)
+		{
+			newpoly = addPoint(newpoly, elem->value);
+			elem = elem->next;
+		}
 	}
 	return newpoly;
 }
@@ -864,6 +895,10 @@ Polygon addIntersectionPoints(Polygon poly1, Polygon poly2)
 	Elt *elem1, *elem2;
 	Polygon res;
 	Point closer, intersect;
+	if(isEmpty(poly1) && isEmpty(poly2))
+	{
+		return poly1;
+	}
 	elem1 = poly1.head;
 	res = createPolygon();
 	res = addPoint(res, createPoint(elem1->value.x, elem1->value.y));
@@ -911,13 +946,24 @@ Polygon addIntersectionPoints(Polygon poly1, Polygon poly2)
 
 Elt *findSamePoint(Polygon poly2, Point p)
 {
+	int i;
 	Elt *elem;
-	elem = poly2.head;
-	while(!equalsPoints(elem->value, p))
+	if(isEmpty(poly2))
 	{
-		elem = elem->next;
+		return NULL;
 	}
-	return elem;
+	else
+	{
+		elem = poly2.head;
+		for(i=0;i<poly2.size;i++)
+		{
+			if(equalsPoints(elem->value, p))
+				return elem;
+			else
+				elem = elem->next;
+		}
+		return NULL;
+	}
 }
 
 Polygon ajustPolygon(Polygon poly)
@@ -926,30 +972,143 @@ Polygon ajustPolygon(Polygon poly)
 	Point minp, maxp, size, scale;
 	Elt *elem;
 	Polygon newpoly;
-	elem = poly.head;
-	minp.x = maxp.x = minp.y = maxp.y = elem->value.x;
-	for(i=0;i<poly.size;i++)
-	{/* Trouve les min et max */
-		elem = elem->next;
-		minp.x = min(minp.x, elem->value.x);
-		maxp.x = max(maxp.x, elem->value.x);
-		minp.y = min(minp.y, elem->value.x);
-		maxp.y = max(maxp.y, elem->value.x);
+	if(!isEmpty(poly))
+	{
+		elem = poly.head;
+		minp.x = maxp.x = minp.y = maxp.y = elem->value.x;
+		for(i=0;i<poly.size;i++)
+		{/* Trouve les min et max */
+			elem = elem->next;
+			minp.x = min(minp.x, elem->value.x);
+			maxp.x = max(maxp.x, elem->value.x);
+			minp.y = min(minp.y, elem->value.x);
+			maxp.y = max(maxp.y, elem->value.x);
+		}
+		size.x = maxp.x - minp.x;
+		size.y = maxp.y - minp.y;
+		/* Find the size of the terminal */
+		struct winsize w;
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+		line = w.ws_row-2;
+		col = (w.ws_col-2)/2;
+		scale.x = col/size.x;
+		scale.y = line/size.y;
+		newpoly = copyPolygon(poly);
+		newpoly = scalePolygon(newpoly, min(scale.x, scale.y));
+		newpoly = translatePolygon(newpoly,  createPoint(min(scale.x,scale.y)*minp.x, min(scale.x,scale.y)*minp.y), createPoint(1,1));
 	}
-	size.x = maxp.x - minp.x;
-	size.y = maxp.y - minp.y;
-	/* Find the size of the terminal */
-	struct winsize w;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	line = w.ws_row-2;
-	col = (w.ws_col-2)/2;
-	scale.x = col/size.x;
-	scale.y = line/size.y;
-	newpoly = copyPolygon(poly);
-	newpoly = scalePolygon(newpoly, min(scale.x, scale.y));
-	newpoly = translatePolygon(newpoly,  createPoint(min(scale.x,scale.y)*minp.x, min(scale.x,scale.y)*minp.y), createPoint(1,1));
 	return newpoly;
 }
+
+
+
+/* Menu functions */
+
+Polygon *selectPolygon(PolyList *list)
+{
+	char str[50],*error;
+	int i,select;
+	EltList *elem;
+	elem = *list;
+	i = 0;
+	printf("0 - Create a new polygon\n");
+	while(elem != NULL)
+	{
+		i++;
+		if(elem->poly.size == 0)
+			printf("%d - poly%d\tsize = 0\t[]\n",i,i);
+		else if(elem->poly.size == 1)
+			printf("%d - poly%d\tsize = 1\t[[%f,%f]]\n",i,i,elem->poly.head->value.x,elem->poly.head->value.y);
+		else if(elem->poly.size == 2)
+			printf("%d - poly%d\tsize = 2\t[[%f,%f],[%f,%f]]\n",i,i,elem->poly.head->value.x,elem->poly.head->value.y,elem->poly.head->next->value.x,elem->poly.head->next->value.y);
+		else if(elem->poly.size == 3)
+			printf("%d - poly%d\tsize = 3\t[[%f,%f],[%f,%f],[%f,%f]]\n",i,i,elem->poly.head->value.x,elem->poly.head->value.y,elem->poly.head->next->value.x,elem->poly.head->next->value.y,elem->poly.head->prev->value.x,elem->poly.head->prev->value.y);
+		else
+			printf("%d - poly%d\tsize = %d\t[[%f,%f],[%f,%f],[...],[%f,%f]]\n",i,i,elem->poly.size,elem->poly.head->value.x,elem->poly.head->value.y,elem->poly.head->next->value.x,elem->poly.head->next->value.y,elem->poly.head->prev->value.x,elem->poly.head->prev->value.y);
+		elem=elem->next;
+	}
+	printf("Press 'q' to quit\n");
+	scanf("%s",str);
+	getchar();
+	if(!strcmp(str,"q"))
+	{
+		return NULL;
+	}
+	select = strtol(str, &error, 10);
+	if(*error != '\0')
+	{
+		puts("Error in the input, select another polygon");
+		return selectPolygon(list);
+	}
+	else if(!select)
+	{
+		
+		elem = (EltList *) malloc(sizeof(EltList));
+		if(elem != NULL)
+		{/* Inerst head */
+			elem->poly = createPolygon();
+			elem->next = *list;
+			*list = elem;
+			puts("Now this is the poly1");
+			return &elem->poly;
+		}
+		else
+		{
+			fprintf(stderr, "Allocation error");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		elem = *list;
+		if(select > i || select < 0)
+		{
+			puts("This polygon isn't valid, select another one :");
+			return selectPolygon(list);
+		}
+		for(i=1;i<select;i++)
+		{
+			elem = elem->next;
+		}
+		return &elem->poly;
+	}
+}
+
+Point selectPoint()
+{
+	Point pt;
+	do
+	{
+	puts("\nEnter your point :");
+	printf("Enter the X coordinate : ");
+	scanf("%lf",&(pt.x));
+	emptyBuff();
+	printf("Enter the Y coordinate : ");
+	scanf("%lf",&pt.y);
+	emptyBuff();
+	printf("New point : [%f,%f]\n",pt.x,pt.y);
+	printf("Press <enter> to continue, anything else to enter a new value\n");
+	}
+	while(!pressEnter());
+	return pt;
+}
+
+Bool pressEnter()
+{
+	if(getchar() == '\n')
+		return true;
+	else
+		emptyBuff();
+	return false;
+}
+
+void emptyBuff()
+{
+	while(getchar() != '\n')
+		;
+}
+
+
 
 
 
