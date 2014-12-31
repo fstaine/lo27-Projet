@@ -38,10 +38,10 @@ int main (int argc, char *argv[])
 		puts("5  - Compute the exclusive OR between two polygons");
 		puts("6  - Compute the difference between two polygons");
 		puts("7  - Test if a point is inside the polygon");
-		puts("8  - Returs the status of two polygons");
+		puts("8  - Returns the status of two polygons");
 		puts("9  - Compute the central symmetry of a polygon");
 		puts("10 - Compute the rotation of a polygon");
-		puts("11 - Resize a poygon");
+		puts("11 - Resize a polygon");
 		puts("12 - Translate a polygon");
 		puts("13 - Compute the convex hull of a polygon");
 		puts("14 - Print a polygon on the terminal");
@@ -156,7 +156,7 @@ int main (int argc, char *argv[])
 				printf("The point [%f,%f] is outside the polygon\n",pt.x,pt.y);
 		}
 		else if(!strcmp(str,"8"))
-		{/* Returs the status of two polygons */
+		{/* Returns the status of two polygons */
 			puts("Select the first polygon");
 			poly1 = selectPolygon(&list);
 			if(poly1 == NULL)
@@ -170,21 +170,21 @@ int main (int argc, char *argv[])
 		}
 		else if(!strcmp(str,"9"))
 		{/* Compute the central symmetry of a polygon */
-			puts("Select the polygon you want to compute the central symmetery, he is going to be modified");
+			puts("Select the polygon you want to compute the central symmetry, he is going to be modified");
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;
-			puts("Select the center of the symmetery");
+			puts("Select the center of the symmetry");
 			pt = selectPoint();
 			*poly = centralSymmetry(*poly, pt);
 		}
 		else if(!strcmp(str,"10"))
 		{/* Compute the rotation of a polygon */
-			puts("Select the polygon you want to compute the central symmetery, he is going to be modified");
+			puts("Select the polygon you want to compute the central symmetry, he is going to be modified");
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;
-			puts("Sel!ct the center of the rotation");
+			puts("Select the center of the rotation");
 			pt = selectPoint();
 			puts("Select the angle (in radians) : ");
 			scanf("%lf", &x);
@@ -214,7 +214,7 @@ int main (int argc, char *argv[])
 		}
 		else if(!strcmp(str,"13"))
 		{/* Compute the convex hull of a polygon */
-			puts("Select the polygon you want to compute the conveh hull, he is going to be modified");
+			puts("Select the polygon you want to compute the convex hull, he is going to be modified");
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;

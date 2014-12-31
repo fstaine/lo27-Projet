@@ -290,7 +290,8 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 }
 
 Polygon exclusiveORPolygons(Polygon p1, Polygon p2)
-{
+{	
+	
 	return createPolygon();
 }
 
