@@ -1,3 +1,5 @@
+/* Date / Auteurs / Contats */
+
 #include <polygon.h>
 
 Point createPoint(double x, double y)
@@ -671,36 +673,40 @@ Polygon translatePolygon (Polygon poly, Point pt1, Point pt2)
 	return poly;
 }
 
+
 Polygon convexHullPolygon(Polygon poly)
 {
-	int i;
 	double res;
 	Polygon newpoly;
-	Elt *elem;
+	Elt *elem,*save;
 	if(poly.size <= 3)/* already convex */
 	{
 		return copyPolygon(poly);
 	}
 	else
 	{
-		i = 1;
 		newpoly = sortByAngle(poly); /* Create the new polygon with the good order */
 		elem = newpoly.head;
 		do
 		{
-			i++;
 			res = (elem->next->value.x - elem->value.x)*(elem->next->next->value.y - elem->value.y) - (elem->next->value.y - elem->value.y)*(elem->next->next->value.x - elem->value.x);
 			if(res <= 0)
 			{
-				newpoly = removePoint(newpoly, i);
+				elem->next->next->prev = elem;
+				save = elem->next->next;
+				free(elem->next);
+				elem->next = save;
+				newpoly.size--;
 			}
-			elem = elem->next;
+			else
+			{
+				elem = elem->next;
+			}
 		}
 		while(elem != newpoly.head);
 	}
 	return newpoly;
 }
-
 
 /********************************/
 void printPoint(Point p)
@@ -1104,7 +1110,7 @@ Polygon adjustPolygon(Polygon poly)
 		scale.y = line/size.y;
 		newpoly = copyPolygon(poly);
 		newpoly = scalePolygon(newpoly, min(scale.x, scale.y));
-		newpoly = translatePolygon(newpoly,  createPoint(min(scale.x,scale.y)*minp.x, min(scale.x,scale.y)*minp.y), createPoint(1,1));
+		newpoly = translatePolygon(newpoly, createPoint(min(scale.x,scale.y)*minp.x, min(scale.x,scale.y)*minp.y), createPoint(1,1));
 	}
 	return newpoly;
 }
@@ -1167,10 +1173,6 @@ double anglePoints(Point A, Point B, Point C)
 	c = normPoints(A,C);
 	return acos((a*a + b*b - c*c) / (2*a*b));
 }
-
-
-
-
 
 /* Menu functions */
 
@@ -1276,8 +1278,4 @@ void emptyBuff()
 	while(getchar() != '\n')
 		;
 }
-
-
-
-
 

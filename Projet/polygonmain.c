@@ -6,25 +6,22 @@
 #ifdef TEST
 int main(int argc, char *argv[])
 {
-	Polygon poly1,poly2,poly3;
-
-	poly1 = createPolygon();
-	poly1 = addPoint(poly1, createPoint(5,7));
-	poly1 = addPoint(poly1, createPoint(8,4));
-	poly1 = addPoint(poly1, createPoint(3,1));
-	poly1 = addPoint(poly1, createPoint(4,4));
-	poly1 = addPoint(poly1, createPoint(1,5));
-
-	poly2 = createPolygon();
-	poly2 = addPoint(poly2, createPoint(8,2));
-	poly2 = addPoint(poly2, createPoint(5,0));
-	poly2 = addPoint(poly2, createPoint(2,6));
-	poly2 = addPoint(poly2, createPoint(4,7));
-	poly2 = addPoint(poly2, createPoint(5,4));
-	
-	poly3 = intersectionPolygons(poly1, poly2);
-	puts(toString(poly3));
-
+	Polygon poly,cv;;
+	poly = createPolygon();
+	poly = addPoint(poly , createPoint(1,1));
+	poly = addPoint(poly , createPoint(7,1));
+	poly = addPoint(poly , createPoint(5,3));
+	poly = addPoint(poly , createPoint(8,2));
+	poly = addPoint(poly , createPoint(12,4));
+	poly = addPoint(poly , createPoint(10,7));
+	poly = addPoint(poly , createPoint(7,2));
+	poly = addPoint(poly , createPoint(6,5));
+	poly = addPoint(poly , createPoint(4,2));
+	poly = addPoint(poly , createPoint(3,5));
+	poly = addPoint(poly , createPoint(4,4));
+	puts(toString(sortByAngle(poly)));
+	cv = convexHullPolygon(poly);
+	puts(toString(cv));
 	return 0;
 }
 #else /* Test undefined */
@@ -294,11 +291,7 @@ int main (int argc, char *argv[])
 			emptyBuff();
 			if(!strcmp(str,"y"))
 			{
-				*poly2 = adjustPolygon(*poly);
-				drawPolygon(*poly2);
-				printf("TEST\n");
-				*poly2 = freePolygon(*poly2);
-				printf("TEST2\n");
+				drawPolygon(adjustPolygon(*poly));
 			}
 			else
 				drawPolygon(*poly);

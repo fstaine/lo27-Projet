@@ -20,14 +20,9 @@ typedef struct{
 	double y;
 }Point;
 
-<<<<<<< c89756d72ffdf29520282a9d2107316bea39f439
-=======
-typedef Point Vector;
-
 /*
  * elements of a polygon
  */
->>>>>>> c5191c6a76774463f823a10025b0bf9b55b2c835
 typedef struct elt{
 	Point value;
 	struct elt *prev;
@@ -196,6 +191,7 @@ Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);
 
 /*
  * Compute the convex hull of the polygon poly, it will create a new polygon with the corresponding points
+ * If some points are quite ambigous, (the angle between them and another point compared to others points are small) the result can be false
  * poly : (Polygon) the polygon we want to compute the convex hull
  */
 Polygon convexHullPolygon(Polygon poly);
