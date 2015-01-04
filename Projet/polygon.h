@@ -1,12 +1,16 @@
+#ifndef __POLYGON_H__
+#define __POLYGON_H__
+
+/* Needed libraries */
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-
-/* For printPolygon : */
+/* For drawPolygon */
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+/* Constants functions */
 #define POS(x,y) printf("\033[%d;%dH",(int)x,(int)y);  /* Move to the x,y position 2 positives integers */
 #define CLEAR() printf("\033[2J\033[0;0H");            /* Clear the terminal and move to the top-left position */
 
@@ -16,22 +20,39 @@ typedef struct{
 	double y;
 }Point;
 
+<<<<<<< c89756d72ffdf29520282a9d2107316bea39f439
+=======
+typedef Point Vector;
+
+/*
+ * elements of a polygon
+ */
+>>>>>>> c5191c6a76774463f823a10025b0bf9b55b2c835
 typedef struct elt{
 	Point value;
 	struct elt *prev;
 	struct elt *next;
 }Elt;
-
+/*
+ * A polygon is defined as a pointer on an element
+ * and the number of points
+ */
 typedef struct{
 	int size;
 	Elt *head;
 }Polygon;
 
+/*
+ * Element of a linked list of polygon
+ */
 typedef struct EltPolyList {
 	Polygon poly;
 	struct EltPolyList *next;
 }EltList;
 
+/*
+ * A linked list of polygon
+ */
 typedef EltList* PolyList;
 
 /* Status enum, for the containsPolygon function */
@@ -54,7 +75,7 @@ typedef enum {
  \**********************/
 
 /*
- * Allocate the memory for a Point structure and fill x and y
+ * create a point with the x and y coordinates
  * x : double, the coordonate x of the point
  * y : double, the coordonate y of the point
  * return a point with the coordonates (x,y)
@@ -76,8 +97,12 @@ Polygon createPolygon();
 Polygon addPoint(Polygon poly, Point pt);
 
 /*
- * 
- * 
+ * Remove the nb point in the polygon, Points are indexed from 1 to N in a polygon
+ * if nb is negative, remove the nb th point, starting from the end
+ * if nb is null, remove nothing
+ * poly : (Polygon) the input polygon we want to modify
+ * the index of the point we want to remove
+ * Return the new polygon without the point
  */
 Polygon removePoint(Polygon poly, int nb);
 
@@ -99,8 +124,20 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2);
  */
 Polygon intersectionPolygons(Polygon p1, Polygon p2);
 
+/* 
+ * Compute the exclusive OR between two polygons.
+ * p1 : (Polygon) The 1st input polygon
+ * p2 : (Polygon) The second input polygon
+ * returns a linked list of polygons 
+ */
 PolyList exclusiveORPolygons(Polygon p1, Polygon p2);
 
+/* 
+ * Compute the exclusive OR between two polygons. The order of the polygons is important in this functionœ
+ * p1 : (Polygon) The 1st input polygon
+ * p2 : (Polygon) The second input polygon
+ * returns a linked list of polygons 
+ */
 PolyList differencePolygons(Polygon p1, Polygon p2);
 
 /* 
@@ -111,33 +148,57 @@ PolyList differencePolygons(Polygon p1, Polygon p2);
  */
 Bool containsPoint(Polygon poly, Point p);
 
+/*
+ * Find the status of two polygons
+ * ref : (Polygon) the reference polygon
+ * poly : (Polygon) the 2nd polygon
+ * Return values :
+ * INSIDE : poly is fully inside ref
+ * OUTSIDE : poly is fully outside ref
+ * INTERSECT : both poly are partially inside / outdide the other one
+ * EQUAL : The two polygons are equals, it means that we can find the same list of point in the same order even if the directions are opposing 
+ * ENCLOSING : ref is fully inside poly
+ */
 Status containsPolygon(Polygon ref , Polygon poly);
 
+/*
+ * The central symmetry of a polygon corresponding to a rotation of PI radians from the point p
+ * The function modify the polygon
+ * poly : (Polygon) the polygon we want to change
+ * p : (Point)  the point arount which we want to rotate
+ */
 Polygon centralSymmetry(Polygon poly, Point p);
 
+/*
+ * The central symmetry of a polygon corresponding to a rotation of angle radians from the point pt
+ * The function modify the polygon
+ * poly : (Polygon) the polygon we want to change
+ * p : (Point)  the point arount which we want to rotate
+ */
 Polygon rotatePolygon(Polygon poly, Point pt, double angle);
 
+/*
+ * Change the size of the input polygon, it will modify it
+ * poly : (Polygon) the input polygon
+ * factor : (double) the facor we want to rescale the polygon, if abs(factor) < 1, the resulting polygon will be smaller than te input one
+ * Return the modified version of the polygon
+ */
 Polygon scalePolygon(Polygon poly, double factor);
 
+/*
+ * Translate a polygon acording to a vector starting from pt1 and ending at pt2
+ * The function modify the polygon
+ * poly : (Polygon) the polygon we want to translate
+ * pt1 : (Point) the starting point of the vector
+ * pt2 : (Point) the end of the vector
+ */
 Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);
 
+/*
+ * Compute the convex hull of the polygon poly, it will create a new polygon with the corresponding points
+ * poly : (Polygon) the polygon we want to compute the convex hull
+ */
 Polygon convexHullPolygon(Polygon poly);
-
-/*
- * Print a point on the terminal
- * P : (Point) the point to print on the terminal
- * Return : nothing
- */
-void drawPoint(Point p);
-
-/*
- * Print a polygon with the same shape as the input one, 
- * the polygon must not be trivial (not only aligned points)
- * the polygon is 1st scaled and translated to be visible on the whole terminal
- * poly : (Polygon) : the polygon we want to print
- * Return : Nothing
- */
-void drawPolygon(Polygon poly);
 
 /*
  * Transform a polygon into a string that respect a specific template : [[x1,y1],[x2,y2],[...]]
@@ -221,8 +282,6 @@ Bool pointBelongsToS(Point pt1, Point pt2, Point pt);
  */
 double normPoints(Point p1, Point p2);
 
-Point replacePoints(Point p1, Point p2); /* ????????? */
-
 /*
  * Print the value of a Status value on the terminal
  * stat : (Status) the input status we want to print the value
@@ -275,25 +334,78 @@ Elt *findSamePoint(Polygon poly2, Point p);
  */
 Polygon adjustPolygon(Polygon poly);
 
+/*
+ * Find the point with le lowest x therebetween those with the lower y and then sort the others points according to there angle between the horizontal axix and the 1st point 
+ * poly : (Polygon) the polygon we want to create a soerted version
+ * return a new polygon (a list of point) sorted by angle
+ */
 Polygon sortByAngle(Polygon poly);
 
+/*
+ * compute the angle between ABC
+ * A, B, C : (Point)
+ * Return a value between O and PI of the angle ^B 
+ */
 double anglePoints(Point A, Point B, Point C);
 
+/*
+ * Add a point to the input list of polygon and return the new element
+ * The list will be modified
+ * list : (PolyList*) a pointer on the list
+ * Return the new element
+ */
 EltList *addPolyList(PolyList *list);
+
+/*
+ * 
+ */
+void printPoint(Point p);
+
+/*
+ * 
+ */
+void printPolygon(Polygon poly);
+
+/*
+ * Print a point on the terminal
+ * P : (Point) the point to print on the terminal
+ */
+void drawPoint(Point p);
+
+/*
+ * Print a polygon with the same shape as the input one, 
+ * the polygon must not be trivial (not only aligned points)
+ * the polygon is 1st scaled and translated to be visible on the whole terminal
+ * poly : (Polygon) : the polygon we want to print
+ */
+void drawPolygon(Polygon poly);
 
 /* Menu functions */
 
+/*
+ * Select a polygon in a list of polygon or create one
+ * list : (PolyList*) a linked list of polygons
+ * Return a pointer on the selected polygon
+ */
 Polygon *selectPolygon(PolyList *list);
 
+/*
+ * Create a point according to the use
+ * return the new point
+ */
 Point selectPoint();
 
-int selectRank(Polygon);
-
+/*
+ * Check if the 1st key pressed is enter and empty the keyboard buffer
+ */
 Bool pressEnter();
 
+/*
+ * Empty the keyboard buffer
+ */
 void emptyBuff();
 
-
+#endif
 
 
 

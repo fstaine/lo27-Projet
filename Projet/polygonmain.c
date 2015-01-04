@@ -1,32 +1,30 @@
 #include <polygon.h>
 #include <math.h>
 
-#define TEST
+//#define TEST
 
 #ifdef TEST
 int main(int argc, char *argv[])
 {
-	Polygon poly1, poly2;/* */
-	PolyList liste;
+	Polygon poly1,poly2,poly3;
 
 	poly1 = createPolygon();
+	poly1 = addPoint(poly1, createPoint(5,7));
+	poly1 = addPoint(poly1, createPoint(8,4));
+	poly1 = addPoint(poly1, createPoint(3,1));
+	poly1 = addPoint(poly1, createPoint(4,4));
+	poly1 = addPoint(poly1, createPoint(1,5));
+
 	poly2 = createPolygon();
+	poly2 = addPoint(poly2, createPoint(8,2));
+	poly2 = addPoint(poly2, createPoint(5,0));
+	poly2 = addPoint(poly2, createPoint(2,6));
+	poly2 = addPoint(poly2, createPoint(4,7));
+	poly2 = addPoint(poly2, createPoint(5,4));
+	
+	poly3 = intersectionPolygons(poly1, poly2);
+	puts(toString(poly3));
 
-	poly1 = addPoint(poly1, createPoint(1,1));
-	poly1 = addPoint(poly1, createPoint(4,1));
-	poly1 = addPoint(poly1, createPoint(4,8));
-	poly1 = addPoint(poly1, createPoint(1,8));
-
-	poly2 = addPoint(poly2, createPoint(6,6));
-	poly2 = addPoint(poly2, createPoint(6,3));
-	poly2 = addPoint(poly2, createPoint(0,3));
-	poly2 = addPoint(poly2, createPoint(0,6));
-	liste = exclusiveORPolygons(poly1, poly2);
-	while(liste != NULL)
-	{
-		printf("%s\n\n",toString(liste->poly));
-		liste = liste->next;
-	}
 	return 0;
 }
 #else /* Test undefined */
@@ -110,6 +108,8 @@ int main (int argc, char *argv[])
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;
+			if(!isEmpty(*poly))
+				freePolygon(*poly);
 			*poly = unionPolygons(*poly1, *poly2);
 		}
 		else if(!strcmp(str,"4"))
@@ -122,10 +122,12 @@ int main (int argc, char *argv[])
 			poly2 = selectPolygon(&list);
 			if(poly2 == NULL)
 				continue;
-			puts("Select the destination\nYou should select an empty polyg");
+			puts("Select the destination\nYou should select an empty polygon");
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;
+			if(!isEmpty(*poly))
+				freePolygon(*poly);
 			*poly = intersectionPolygons(*poly1, *poly2);
 		}
 		else if(!strcmp(str,"5"))
@@ -144,7 +146,7 @@ int main (int argc, char *argv[])
 			{
 				elemList = elemList->next;
 			}
-			elemList = exclusiveORPolygon(*poly1, *poly2);
+			elemList = exclusiveORPolygons(*poly1, *poly2);
 			printf("Do you want to print the list of polygon created : (y/n)\n");
 			scanf("%s",str);
 			if(!strcmp(str, "y"))
@@ -257,11 +259,17 @@ int main (int argc, char *argv[])
 		}
 		else if(!strcmp(str,"13"))
 		{/* Compute the convex hull of a polygon */
-			puts("Select the polygon you want to compute the convex hull, he is going to be modified");
+			puts("Select the polygon you want to compute the convex hull");
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;
-			*poly = convexHullPolygon(*poly);
+			puts("Select the destination polygon");
+			poly2 = selectPolygon(&list);
+			if(poly2 == NULL)
+				continue;
+			if(!isEmpty(*poly2))
+				freePolygon(*poly2);
+			*poly2 = convexHullPolygon(*poly);
 		}
 		else if(!strcmp(str,"14"))
 		{/* print the string of the polygon */
@@ -272,6 +280,8 @@ int main (int argc, char *argv[])
 			str2 = toString(*poly);
 			puts(str2);
 			free(str2);
+			printf("Press <enter> to continue\n");
+			pressEnter();
 		}
 		else if(!strcmp(str,"15"))
 		{/* Print a polygon on the terminal */

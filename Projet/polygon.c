@@ -74,7 +74,7 @@ Polygon removePoint(Polygon poly, int place)/* Problem with removePoint */
 		}
 		else if(place<0)
 		{
-			place%= place;
+			place%= poly.size;
 			if(place == 0)
 			{
 				elem = poly.head;
@@ -115,7 +115,7 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 	status = containsPolygon(poly1, poly2);
 	if(status == OUTSIDE)
 	{/* On ne veut pas de poly séparés pour l'instant ! */
-		exit(EXIT_FAILURE);
+		return createPolygon();
 	}
 	else if(status == EQUAL)
 	{
@@ -129,7 +129,6 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 	{
 		return copyPolygon(poly2);
 	}
-	/* Ajout des points d'intersections entre les deux polygones dans les deux polygones*/
 	cpy1 = addIntersectionPoints(poly1, poly2);
 	cpy2 = addIntersectionPoints(poly2, poly1);
 	elem1 = cpy1.head;
@@ -149,6 +148,7 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 	{
 		if(!pointBelongsToPoly(intersect, elem1->value))
 		{/* si il n'y a pas d'intersection */
+			unionpoly = addPoint(unionpoly, elem1->value);
 			if(pointBelongsToPoly(unionpoly,  elem1->next->value) && !equalsPoints(unionpoly.head->value, elem1->next->value))
 			{
 				elem1 = elem1->prev;
@@ -166,8 +166,8 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 			polyswap = cpy1;
 			cpy1 = cpy2;
 			cpy2 = polyswap;
-			if(containsPoint(cpy2,elem1->next->value) || pointBelongsToPoly(intersect, elem1->next->value))
-			{/* Si le point suiant est dans l'autre poly ou si c'est une intersection */
+			if(containsPoint(cpy2, createPoint(elem1->value.x+0.1*(elem1->next->value.x-elem1->value.x), elem1->value.y+0.1*(elem1->next->value.y-elem1->value.y))))
+			{/* Prendre le coté sortant */
 				elem1 = elem1->prev;
 			}
 			else
@@ -226,7 +226,6 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 		elem1 = elem1->next;
 	}
 	elem1 = findSamePoint(cpy1, intersect.head->value);
-	printf("%f, %f\n",elem1->value.x, elem1->value.y);
 	intersectionpoly = createPolygon();
 	do
 	{
@@ -250,7 +249,7 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 			polyswap = cpy1;
 			cpy1 = cpy2;
 			cpy2 = polyswap;
-			if(containsPoint(cpy1,elem1->next->value))
+			if(!containsPoint(cpy2, createPoint(elem1->value.x+0.1*(elem1->next->value.x-elem1->value.x), elem1->value.y+0.1*(elem1->next->value.y-elem1->value.y))))
 			{/* Si le suivant est dehors */
 				elem1 = elem1->prev;
 			}
@@ -259,7 +258,6 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 				elem1 = elem1->next;
 			}
 		}
-		getchar();
 	}
 	while(!equalsPoints(intersectionpoly.head->value, elem1->value));
 	return intersectionpoly;
@@ -360,7 +358,7 @@ PolyList  differencePolygons(Polygon poly1, Polygon poly2)
 				elem1 = elem1->next;
 			}
 		}
-		{/* Marche surement */
+		{
 			elem1 = findSamePoint(cpy1, elem1->value);
 			while(!equalsPoints(elem1->value, elemlist->poly.head->value))
 			{
