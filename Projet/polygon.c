@@ -1,8 +1,6 @@
-
 #include <polygon.h>
 
-
-Point createPoint(double x, double y) /* Must change to double precision */
+Point createPoint(double x, double y)
 {
 	Point pt;
 	pt.x = x;
@@ -116,7 +114,7 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 	}
 	status = containsPolygon(poly1, poly2);
 	if(status == OUTSIDE)
-	{/* On ne veut pas de poly séparés pour l'instant !*/
+	{/* On ne veut pas de poly séparés pour l'instant ! */
 		exit(EXIT_FAILURE);
 	}
 	else if(status == EQUAL)
@@ -143,18 +141,13 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 		}
 		elem1 = elem1->next;
 	}
-	printf("Intersect :\n%s\n\n",toString(intersect));
 	elem1 = findSamePoint(cpy1, intersect.head->value);
 	/* Commencer sur une intersection */
 	unionpoly = createPolygon();
 	do
 	{
-		printf("\nDébut de la boucle\n");
 		if(!pointBelongsToPoly(intersect, elem1->value))
 		{/* si il n'y a pas d'intersection */
-			printf("Pas d'intersection\n");
-			unionpoly = addPoint(unionpoly, elem1->value);
-			printf("unionpoly : %s\n",toString(unionpoly));
 			if(pointBelongsToPoly(unionpoly,  elem1->next->value) && !equalsPoints(unionpoly.head->value, elem1->next->value))
 			{
 				elem1 = elem1->prev;
@@ -166,9 +159,7 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 		}
 		else
 		{
-			printf("Intersection en vue !\n");
 			unionpoly = addPoint(unionpoly, elem1->value);
-			printf("unionpoly : %s\n",toString(unionpoly));
 			/* Retrouver le point dans l'autre poly */
 			elem1 = findSamePoint(cpy2, elem1->value);
 			polyswap = cpy1;
@@ -176,12 +167,10 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 			cpy2 = polyswap;
 			if(containsPoint(cpy2,elem1->next->value) || pointBelongsToPoly(intersect, elem1->next->value))
 			{/* Si le point suiant est dans l'autre poly ou si c'est une intersection */
-				printf("Prendre le précédent\n");
 				elem1 = elem1->prev;
 			}
 			else
 			{
-				printf("Prendre le suivant\n");
 				elem1 = elem1->next;
 			}
 		}
@@ -198,7 +187,7 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 	Polygon intersectionpoly, cpy1, cpy2, intersect, polyswap;
 
 	if(isEmpty(poly1))
-	{/* Faire des copies !! */
+	{
 		return copyPolygon(poly1);
 	}
 	else if(isEmpty(poly2))
@@ -223,11 +212,7 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 		return copyPolygon(poly1);
 	}
 	cpy1 = addIntersectionPoints(poly1, poly2);
-	//printf("cpy1 : \n%s\n\n", toString(cpy1));
-
 	cpy2 = addIntersectionPoints(poly2, poly1);
-	//printf("cpy2 : \n%s\n\n", toString(cpy2));
-
 	elem1 = cpy1.head;
 	intersect = createPolygon();
 	for(i=0;i<cpy1.size;i++)
@@ -239,18 +224,14 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 		}
 		elem1 = elem1->next;
 	}
-	//printf("Intersect :\n%s\n\n",toString(intersect));
 	elem1 = findSamePoint(cpy1, intersect.head->value);
 	printf("%f, %f\n",elem1->value.x, elem1->value.y);
 	intersectionpoly = createPolygon();
 	do
 	{
-		printf("\nDébut de la boucle\n");
 		if(!pointBelongsToPoly(intersect, elem1->value))
 		{/* si il n'y a pas d'intersection */
-			printf("Pas d'intersection\n");
 			intersectionpoly = addPoint(intersectionpoly, elem1->value);
-			printf("intersectionpoly : %s\n",toString(intersectionpoly));
 			if(pointBelongsToPoly(intersectionpoly,  elem1->next->value))
 			{
 				elem1 = elem1->prev;
@@ -262,27 +243,21 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 		}
 		else
 		{
-			printf("Intersection en vue !\n");
 			intersectionpoly = addPoint(intersectionpoly, elem1->value);
-			printf("intersectionpoly : %s\n",toString(intersectionpoly));
 			/* Retrouver le point dans l'autre poly */
 			elem1 = findSamePoint(cpy2, elem1->value);
 			polyswap = cpy1;
 			cpy1 = cpy2;
 			cpy2 = polyswap;
-			printf("poly.size = %d\n", cpy1.size);
 			if(containsPoint(cpy1,elem1->next->value))
 			{/* Si le suivant est dehors */
-				printf("Prendre le précédent\n");
 				elem1 = elem1->prev;
 			}
 			else
 			{
-				printf("Prendre le suivant\n");
 				elem1 = elem1->next;
 			}
 		}
-		printf("NextPoint.x = %f, NextPoint.y = %f\n", elem1->value.x, elem1->value.y);
 		getchar();
 	}
 	while(!equalsPoints(intersectionpoly.head->value, elem1->value));
@@ -290,16 +265,120 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 }
 
 Polygon exclusiveORPolygons(Polygon p1, Polygon p2)
-{	
-	
-	return createPolygon();
-}
-
-Polygon differencePolygons(Polygon p1, Polygon p2)
 {
 	return createPolygon();
 }
 
+PolyList  differencePolygons(Polygon poly1, Polygon poly2)
+{
+	int i;
+	Status status;
+	Elt *elem1;
+	Polygon cpy1, cpy2, intersect;
+	EltList *elemlist;
+	PolyList list;
+	list = NULL;
+	if(isEmpty(poly1) || isEmpty(poly2))
+	{/* CREATE LINKED LIST OF THESE POLYGONS */
+		elemlist = addPolyList(&list);
+		elemlist->poly = copyPolygon(poly1);
+		return elemlist;
+	}
+	status = containsPolygon(poly1, poly2);
+	if(status == OUTSIDE)
+	{
+		elemlist = addPolyList(&list);
+		elemlist->poly = copyPolygon(poly1);
+		return elemlist;
+	}
+	else if(status == EQUAL)
+	{
+		elemlist = addPolyList(&list);
+		elemlist->poly = createPolygon();
+		return elemlist;
+	}
+	else if(status == INSIDE)
+	{/* It should create a hole, but we return the initial polygon */
+		elemlist = addPolyList(&list);
+		elemlist->poly = copyPolygon(poly1);
+		return elemlist;
+	}
+	else if(status == ENCLOSING)
+	{
+		elemlist = addPolyList(&list);
+		elemlist->poly = createPolygon();
+		return elemlist;
+	}
+	cpy1 = addIntersectionPoints(poly1, poly2);
+	cpy2 = addIntersectionPoints(poly2, poly1);
+	elem1 = cpy1.head;
+	intersect = createPolygon();
+	for(i=0;i<cpy1.size;i++)
+	{/* Création du polygon avec les intersections */
+		if(pointBelongsToPoly(cpy2, elem1->value))
+		{
+			intersect = addPoint(intersect, elem1->value);
+		}
+		elem1 = elem1->next;
+	}
+	elem1 = cpy1.head;
+	elem1 = findSamePoint(cpy2, intersect.head->value);
+	/* La liste est vide */
+	for(i=0;i<intersect.size/2;i++)
+	{
+		/* Ajouter un elem à la liste */
+		elemlist = addPolyList(&list);
+		elemlist->poly = addPoint(elemlist->poly, elem1->value);
+		if(!containsPoint(poly1, createPoint(elem1->value.x+0.1*(elem1->next->value.x-elem1->value.x), elem1->value.y+0.1*(elem1->next->value.y-elem1->value.y))))
+		{
+			elem1 = elem1->prev;
+			while(!pointBelongsToPoly(intersect, elem1->value))
+			{
+				elemlist->poly = addPoint(elemlist->poly, elem1->value);
+				elem1 = elem1->prev;
+			}
+		}
+		else
+		{
+			elem1 = elem1->next;
+			while(!pointBelongsToPoly(intersect, elem1->value))
+			{
+				elemlist->poly = addPoint(elemlist->poly, elem1->value);
+				elem1 = elem1->next;
+			}
+		}
+		{/* Marche surement */
+			elem1 = findSamePoint(cpy1, elem1->value);
+			while(!equalsPoints(elem1->value, elemlist->poly.head->value))
+			{
+				elemlist->poly = addPoint(elemlist->poly, elem1->value);
+				elem1 = elem1->next;
+			}
+		}
+		elem1 = findSamePoint(cpy2, findSamePoint(intersect, elem1->value)->next->next->value);
+	}
+	return list;
+}
+
+
+/* Add a new polygon to the list and return a pointer on the new element */
+EltList *addPolyList(PolyList *list)
+{
+	EltList *elem;
+	elem = (EltList *) malloc(sizeof(EltList));
+	if(elem != NULL)
+	{/* Inerst head */
+		elem->poly = createPolygon();
+		elem->next = *list;
+		*list = elem;
+		return elem;
+	}
+	else
+	{
+		fprintf(stderr, "Allocation error");
+		exit(EXIT_FAILURE);
+	}
+}
 
 Bool containsPoint(const Polygon poly, Point p)
 {
@@ -387,7 +466,7 @@ Status containsPolygon(Polygon poly1, Polygon poly2)
 	{
 		if(!containsPoint(poly2, el1->value))
 		{/* Si le point el1 !€ ploy2 */
-			enclosing = false; /* enclosing ?*/
+			enclosing = false;
 			equals = false;
 		}
 		el1 = el1->next;
@@ -398,13 +477,15 @@ Status containsPolygon(Polygon poly1, Polygon poly2)
 		el2 = poly2.head;
 		for(i=0;i<poly1.size;i++)
 		{
+			el2 = poly2.head;
 			for(j=0;j<poly2.size;j++)
 			{
-				el2 = poly2.head;
-				intersect = intersectionStraights(el1->value, el1->next->value, el2->value,el2->next->value);/* intersection semgent */
+
+				intersect = intersectionStraights(el1->value, el1->next->value, el2->value,el2->next->value);
 				if(pointBelongsToS(el1->value, el1->next->value, intersect) && pointBelongsToS(el2->value, el2->next->value, intersect))
 				{/* Si il y a un point d'intersection dans les segments */
 					outside = false;
+					goto end;/* We can imediately stop the process */
 				}
 				else
 				{
@@ -414,7 +495,7 @@ Status containsPolygon(Polygon poly1, Polygon poly2)
 			el1 = el1->next;
 		}
 	}
-	if(equals)
+	end:if(equals)
 	{/* test si vraiment equals */
 		if(poly1.size != poly2.size)
 		{
@@ -529,7 +610,7 @@ Polygon rotatePolygon(Polygon poly, Point pt, double angle)/***********/
 	if(!isEmpty(poly))
 	{
 		Temp=poly.head;
-		angle = -angle;
+		angle = -angle;/* counterclockwise */
 		for(i=1;i<=poly.size;i++)
 		{
 			x=cos(angle)*(Temp->value.x-pt.x)-sin(angle)*(Temp->value.y-pt.y)+pt.x;
@@ -579,43 +660,53 @@ Polygon translatePolygon (Polygon poly, Point pt1, Point pt2)
 	return poly;
 }
 
-Polygon convexHullPolygon(Polygon poly)/* marche pas si on a un polygone croisée ou un vraiment tordu :'( */
+Polygon convexHullPolygon(Polygon poly)
 {
 	int i;
-	Point mid;
+	double res;
+	Polygon newpoly;
 	Elt *elem;
-	elem = poly.head;
-	Polygon convex;
-	convex = createPolygon();
-	Bool ok;
-	elem = poly.head;
-	for(i=0;i<poly.size;i++)
+	if(poly.size <= 3)/* already convex */
 	{
-		convex = addPoint(convex, elem->value);
-		elem = elem->next;
+		return poly;
 	}
-	do
+	else
 	{
-		ok = true;
-		elem = convex.head;
-		for(i=0;i<convex.size;i++)
+		i = 1;
+		newpoly = sortByAngle(poly); /* Create the new polygon with the good order */
+		elem = newpoly.head;
+		do
 		{
-			mid.x = (elem->value.x + elem->next->next->value.x)/2;
-			mid.y = (elem->value.y + elem->next->next->value.y)/2;
-
-			if(!containsPoint(convex, mid))
+			i++;
+			res = (elem->next->value.x - elem->value.x)*(elem->next->next->value.y - elem->value.y) - (elem->next->value.y - elem->value.y)*(elem->next->next->value.x - elem->value.x);
+			if(res <= 0)
 			{
-				convex = removePoint(convex, i+2);
-				ok = false;
+				newpoly = removePoint(newpoly, i);
 			}
 			elem = elem->next;
 		}
+		while(elem != newpoly.head);
 	}
-	while(ok == false);
-	return convex;
+	return newpoly;
 }
 
+
+/********************************/
 void printPoint(Point p)
+{
+	printf("[%f,%f]",p.x,p.y);
+}
+
+void printPolygon(Polygon poly)
+{
+	char *str;
+	str = toString(poly);
+	puts(str);
+	free(str);
+}
+
+
+void drawPoint(Point p)
 {
 	POS(p.x,p.y*2);
 	printf("*");
@@ -625,18 +716,16 @@ void printPoint(Point p)
  * Print a polygon with the same shape as poly on the terminal
  * poly : The input polygon we want to print
  */
-void printPolygon(Polygon poly)
+void drawPolygon(Polygon poly)
 {
 	int line, col,i,j;
 	Point p,p2;
-	Polygon newpoly;
+	struct winsize w;
 	if(isEmpty(poly))
 	{
 		return;
 	}
-	newpoly = ajustPolygon(poly);
 	/* Finding the number of line - Collums : */
-	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 	line = w.ws_row;
 	col = w.ws_col;
@@ -645,11 +734,11 @@ void printPolygon(Polygon poly)
 	{
 		for(j=0;j<2*col;j++)
 		{
-			if(containsPoint(newpoly,(p=createPoint(j+0.1,i+0.1))))
+			if(containsPoint(poly,(p=createPoint(j+0.1,i+0.1))))
 			{
 				p2.x = p.y;
 				p2.y = p.x;
-				printPoint(p2);
+				drawPoint(p2);
 			}
 		}
 	}
@@ -657,7 +746,6 @@ void printPolygon(Polygon poly)
 	printf("Press <enter> to quit");
 	getchar();
 	CLEAR();
-	newpoly = freePolygon(newpoly);
 }
 
 char *toString(Polygon poly)
@@ -671,7 +759,7 @@ char *toString(Polygon poly)
 		sprintf(str, "[]");
 		return str;
 	}
-	if((str = (char *) malloc(sizeof(char)*(30*poly.size) + 2)) == NULL) /* Mem pour la chaine */
+	if((str = (char *) malloc(sizeof(char)*(30*poly.size) + 2)) == NULL) /* Memory for the string, 30char : be sure we have enough */
 	{
 		fprintf(stderr, "Allocation error, not enough space in memory !\n");
 		return str;
@@ -755,43 +843,48 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 	double a,b,c,d;
 	Point Temp;
 	/*creation of the straights in function of the points*/
-	if (pt1.x!=pt2.x)
+	if (!equals(pt1.x, pt2.x))
 	{
 		a=(pt1.y-pt2.y)/(pt1.x-pt2.x);
 		b=pt1.y-a*pt1.x;
 	}
-	if (pt3.x!=pt4.x)
+	else
+	{
+		a = INFINITY;
+		b = NAN;
+	}
+	if (!equals(pt3.x, pt4.x))
 	{
 		c=(pt3.y-pt4.y)/(pt3.x-pt4.x);
 		d=pt3.y-c*pt3.x;
 	}
-
-	if(equals(a,c) && equals(b,d))//Cas droites confondues
+	else
+	{
+		c = INFINITY;
+		d = NAN;
+	}
+	if(equals(a,c) && equals(b,d))/* Cas droites confondues */
 	{
 		Temp.x=NAN;
 		Temp.y=NAN;
 	}
-	else if(equals(a,c))// Cas droites parallèles uniquement
+
+	else if (equals(pt1.x, pt2.x)) /* Cas d'une droite verticale */
 	{
-		Temp.x=INFINITY;
-		Temp.y=INFINITY;
-	}
-	else if (equals(pt1.x, pt2.x)) // Cas d'une droite verticale
-	{
-		if(c!=0)
+		if(!equals(c, 0))
 		{
 			Temp.x=pt1.x;
 			Temp.y=(pt1.x-pt3.x)*c+pt3.y;
 		}
-		else //Cas d'une droite verticale + horizontale
+		else /* Cas d'une droite verticale + horizontale */
 		{
 			Temp.x=pt1.x;
 			Temp.y=pt4.y;
 		}
 	}
-	else if (equals(pt3.x, pt4.x))// Cas inverse
+	else if (equals(pt3.x, pt4.x))/* Cas inverse */
 	{
-		if(a!=0)
+		if(!equals(a, 0))
 		{
 			Temp.x=pt3.x;
 			Temp.y=(pt3.x-pt1.x)*a+pt1.y;
@@ -802,7 +895,12 @@ Point intersectionStraights(Point pt1, Point pt2, Point pt3, Point pt4)
 			Temp.y=pt2.y;
 		}
 	}
-	else // Cas général
+	else if(equals(a,c))/* Cas droites parallèles uniquement */
+	{
+		Temp.x=INFINITY;
+		Temp.y=INFINITY;
+	}
+	else /* Cas général */
 	{
 		Temp.x=(d-b)/(a-c);
 		Temp.y=a*Temp.x+b;
@@ -917,8 +1015,7 @@ Polygon addIntersectionPoints(Polygon poly1, Polygon poly2)
 				newnorm = normPoints(elem1->value, intersect);
 				if(pointBelongsToS(elem1->value, elem1->next->value, intersect) && pointBelongsToS(elem2->value, elem2->next->value, intersect) && (norm < 0 || newnorm < norm) && !pointBelongsToPoly(res, intersect))
 				{
-
-					nbintersect ++; //nb intersect = nombre d'interesections pas encores rentrées
+					nbintersect ++; /* nb intersect = nombre d'interesections pas encores rentrées */
 					if(!pointBelongsToPoly(res, intersect))
 					{
 						norm = newnorm;
@@ -967,7 +1064,7 @@ Elt *findSamePoint(Polygon poly2, Point p)
 	}
 }
 
-Polygon ajustPolygon(Polygon poly)
+Polygon adjustPolygon(Polygon poly)
 {
 	int i, col, line;
 	Point minp, maxp, size, scale;
@@ -1000,6 +1097,67 @@ Polygon ajustPolygon(Polygon poly)
 	}
 	return newpoly;
 }
+
+Polygon sortByAngle(Polygon poly)
+{
+	int i,j;
+	double angle,prevangle, minangle;
+	Point P, P2;
+	Elt *elem, *start, *nextelem;
+	Polygon newpoly;
+	/* Find the point with the lower y */
+	start = poly.head;
+	elem = poly.head->next;
+	for(i=1;i<poly.size;i++)
+	{
+		if(elem->value.y < start->value.y || (equals(elem->value.y, start->value.y) && elem->value.x < start->value.x))
+			start = elem;
+		elem = elem->next;
+	}
+	/* start is now on the point with the lower x between them with the lower y */
+	/* Sort by angle */
+	P = start->value;
+	P2 = createPoint(P.x+1, P.y);
+	prevangle = -1;
+	newpoly = createPolygon();
+	newpoly = addPoint(newpoly, P);
+	for(i=1;i<poly.size;i++)
+	{/* Tant qu'il reste encore des points à trouver */
+		elem = start->next;
+		minangle = 4;
+		for(j=1;j<poly.size;j++)
+		{/* Trouver celui qui a l'angle minimum */
+			angle = anglePoints(elem->value, P, P2);
+			if(angle < minangle && angle > prevangle )
+			{
+				minangle = angle;
+				nextelem = elem;
+			}
+			elem =elem->next;
+		}
+		prevangle = minangle;
+		newpoly = addPoint(newpoly, nextelem->value);
+	}
+	return newpoly;
+}
+
+/*
+ * Compute the angle ABC, the value returned is between [0, PI]
+ * A : (Point) The starting Point
+ * B : (Point) The middle Point
+ * C : (Point) The ending Point
+ * Result (Double) The angle between ABC between 0 an PI
+ */
+double anglePoints(Point A, Point B, Point C)
+{
+	double a, b, c;
+	a = normPoints(C,B);
+	b = normPoints(A,B);
+	c = normPoints(A,C);
+	return acos((a*a + b*b - c*c) / (2*a*b));
+}
+
+
 
 
 
@@ -1043,7 +1201,6 @@ Polygon *selectPolygon(PolyList *list)
 	}
 	else if(!select)
 	{
-		
 		elem = (EltList *) malloc(sizeof(EltList));
 		if(elem != NULL)
 		{/* Inerst head */
@@ -1080,15 +1237,15 @@ Point selectPoint()
 	Point pt;
 	do
 	{
-	puts("\nEnter your point :");
-	printf("Enter the X coordinate : ");
-	scanf("%lf",&(pt.x));
-	emptyBuff();
-	printf("Enter the Y coordinate : ");
-	scanf("%lf",&pt.y);
-	emptyBuff();
-	printf("New point : [%f,%f]\n",pt.x,pt.y);
-	printf("Press <enter> to continue, anything else to enter a new value\n");
+		puts("\nEnter your point :");
+		printf("Enter the X coordinate : ");
+		scanf("%lf",&(pt.x));
+		emptyBuff();
+		printf("Enter the Y coordinate : ");
+		scanf("%lf",&pt.y);
+		emptyBuff();
+		printf("New point : [%f,%f]\n",pt.x,pt.y);
+		printf("Press <enter> to continue, anything else to enter a new value\n");
 	}
 	while(!pressEnter());
 	return pt;
