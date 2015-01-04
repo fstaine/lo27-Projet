@@ -16,8 +16,6 @@ typedef struct{
 	double y;
 }Point;
 
-typedef Point Vector;
-
 typedef struct elt{
 	Point value;
 	struct elt *prev;

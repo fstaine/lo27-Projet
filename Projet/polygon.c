@@ -129,6 +129,7 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2)
 	{
 		return copyPolygon(poly2);
 	}
+	/* Ajout des points d'intersections entre les deux polygones dans les deux polygones*/
 	cpy1 = addIntersectionPoints(poly1, poly2);
 	cpy2 = addIntersectionPoints(poly2, poly1);
 	elem1 = cpy1.head;
