@@ -33,7 +33,6 @@ $(TARGET): $(EXESOURCEOFILE) $(LIBTARGET)
 #Generating the library binary code
 $(LIBTARGET): $(LIBSOURCEOFILE)
 	@echo "\n Generating the library " $@
-	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:.
 	$(CXX) $(CFLAGS) -shared $(LIBSOURCEOFILE) -o $(LIBTARGET)
 
 #Generating an object file from a C file having the same name

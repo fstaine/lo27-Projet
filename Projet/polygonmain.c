@@ -1,14 +1,32 @@
 #include <polygon.h>
+#include <math.h>
 
-//#define TEST
-
-#define REVERSE printf("\033[7m")
-#define NORMAL printf("\033[0m")
+#define TEST
 
 #ifdef TEST
 int main(int argc, char *argv[])
 {
-	printf("test :%5d\n", 5);
+	Polygon poly1, poly2;/* */
+	PolyList liste;
+
+	poly1 = createPolygon();
+	poly2 = createPolygon();
+
+	poly1 = addPoint(poly1, createPoint(1,1));
+	poly1 = addPoint(poly1, createPoint(4,1));
+	poly1 = addPoint(poly1, createPoint(4,8));
+	poly1 = addPoint(poly1, createPoint(1,8));
+
+	poly2 = addPoint(poly2, createPoint(6,6));
+	poly2 = addPoint(poly2, createPoint(6,3));
+	poly2 = addPoint(poly2, createPoint(0,3));
+	poly2 = addPoint(poly2, createPoint(0,6));
+	liste = exclusiveORPolygons(poly1, poly2);
+	while(liste != NULL)
+	{
+		printf("%s\n\n",toString(liste->poly));
+		liste = liste->next;
+	}
 	return 0;
 }
 #else /* Test undefined */
@@ -22,6 +40,7 @@ int main (int argc, char *argv[])
 	Status status;
 	Point pt,pt2;
 	Polygon *poly,*poly1,*poly2;
+	EltList *elemList;
 	PolyList list;
 	list = NULL;
 	CLEAR();
@@ -44,8 +63,8 @@ int main (int argc, char *argv[])
 		puts("11 - Resize a polygon");
 		puts("12 - Translate a polygon");
 		puts("13 - Compute the convex hull of a polygon");
-		puts("14 - Print a polygon on the terminal");
-		puts("15 - print the string of the polygon");
+		puts("14 - print the string of the polygon");
+		puts("15 - draw a polygon on the terminal");
 		puts("Press 'q'to quit");
 		scanf("%s",str);
 		getchar();
@@ -119,11 +138,23 @@ int main (int argc, char *argv[])
 			poly2 = selectPolygon(&list);
 			if(poly2 == NULL)
 				continue;
-			puts("Select the destination\nYou should select an empty polygon\n");
-			poly = selectPolygon(&list);
-			if(poly == NULL)
-				continue;
-			*poly = exclusiveORPolygons(*poly1, *poly2);
+			/* Add the list of poly at the end of the current list */
+			elemList = list;
+			while(elemList->next != NULL)
+			{
+				elemList = elemList->next;
+			}
+			elemList = exclusiveORPolygon(*poly1, *poly2);
+			printf("Do you want to print the list of polygon created : (y/n)\n");
+			scanf("%s",str);
+			if(!strcmp(str, "y"))
+			{
+				while(elemList !=  NULL)
+				{
+					printf("%s\n",toString(elemList->poly));
+					elemList = elemList->next;
+				}
+			}
 		}
 		else if(!strcmp(str,"6"))
 		{/* Compute the difference of two polygons */
@@ -135,11 +166,23 @@ int main (int argc, char *argv[])
 			poly2 = selectPolygon(&list);
 			if(poly2 == NULL)
 				continue;
-			puts("Select the destination\nYou should select an empty polygon");
-			poly = selectPolygon(&list);
-			if(poly == NULL)
-				continue;
-			*poly = differencePolygons(*poly1, *poly2);
+			/* Add the list of poly at the end of the current list */
+			elemList = list;
+			while(elemList->next != NULL)
+			{
+				elemList = elemList->next;
+			}
+			elemList = differencePolygons(*poly1, *poly2);
+			printf("Do you want to print the list of polygon created : (y/n)\n");
+			scanf("%s",str);
+			if(!strcmp(str, "y"))
+			{
+				while(elemList !=  NULL)
+				{
+					printf("%s\n",toString(elemList->poly));
+					elemList = elemList->next;
+				}
+			}
 		}
 		else if(!strcmp(str,"7"))
 		{/* Test if a point is inside the polygon */
@@ -180,7 +223,7 @@ int main (int argc, char *argv[])
 		}
 		else if(!strcmp(str,"10"))
 		{/* Compute the rotation of a polygon */
-			puts("Select the polygon you want to compute the central symmetry, he is going to be modified");
+			puts("Select the polygon you want to compute the central symmetery, he is going to be modified");
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;
@@ -221,26 +264,35 @@ int main (int argc, char *argv[])
 			*poly = convexHullPolygon(*poly);
 		}
 		else if(!strcmp(str,"14"))
-		{/* Print a polygon on the terminal */
-			puts("Select the polygon you want to print on the terminal ");
-			poly = selectPolygon(&list);
-			if(poly == NULL)
-				continue;
-			printPolygon(*poly);
-
-		}
-		else if(!strcmp(str,"15"))
 		{/* print the string of the polygon */
-			puts("Select the polygon you'd like to extract the string");
+			puts("Select the polygon you'd like to print on the teminal");
 			poly = selectPolygon(&list);
 			if(poly == NULL)
 				continue;
 			str2 = toString(*poly);
-			printf("Do you want to print it in the terminal ?(y/n) : ");
-			scanf("%s",str);
-			if(!strcmp(str, "y"))
-				puts(str2);
+			puts(str2);
 			free(str2);
+		}
+		else if(!strcmp(str,"15"))
+		{/* Print a polygon on the terminal */
+			puts("Select the polygon you want to draw on the terminal ");
+			poly = selectPolygon(&list);
+			if(poly == NULL)
+				continue;
+			printf("Do you want to adjust the polygon to the terminal ?(y/n) : ");
+			scanf("%s",str);
+			emptyBuff();
+			if(!strcmp(str,"y"))
+			{
+				*poly2 = adjustPolygon(*poly);
+				drawPolygon(*poly2);
+				printf("TEST\n");
+				*poly2 = freePolygon(*poly2);
+				printf("TEST2\n");
+			}
+			else
+				drawPolygon(*poly);
+
 		}
 	}
 	return 0;

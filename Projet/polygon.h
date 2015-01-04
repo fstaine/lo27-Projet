@@ -7,8 +7,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-#define POS(x,y) printf("\033[%d;%dH",(int)x,(int)y);  // Move to the x,y position 2 positives integers
-#define CLEAR() printf("\033[2J\033[0;0H");
+#define POS(x,y) printf("\033[%d;%dH",(int)x,(int)y);  /* Move to the x,y position 2 positives integers */
+#define CLEAR() printf("\033[2J\033[0;0H");            /* Clear the terminal and move to the top-left position */
 
 /* Types */
 typedef struct{
@@ -36,7 +36,6 @@ typedef struct EltPolyList {
 
 typedef EltList* PolyList;
 
-
 /* Status enum, for the containsPolygon function */
 typedef enum{
 	INSIDE,
@@ -62,13 +61,13 @@ typedef enum {
  * y : double, the coordonate y of the point
  * return a point with the coordonates (x,y)
  */
-Point createPoint(double x, double y);//OK
+Point createPoint(double x, double y);
 
 /*
  * Create an empty Polygon
  * Return the empty Polygon
  */
-Polygon createPolygon();//OK
+Polygon createPolygon();
 
 /*
  * Add a point in the polygon poly
@@ -76,13 +75,13 @@ Polygon createPolygon();//OK
  * pt : a pointer on the point to add in poly
  * return the new version of the Polygon poly
  */
-Polygon addPoint(Polygon poly, Point pt);//OK
+Polygon addPoint(Polygon poly, Point pt);
 
 /*
  * 
  * 
  */
-Polygon removePoint(Polygon poly, int nb);//OK
+Polygon removePoint(Polygon poly, int nb);
 
 /*
  * Compute the union between two specified polygons
@@ -102,9 +101,9 @@ Polygon unionPolygons(Polygon poly1, Polygon poly2);
  */
 Polygon intersectionPolygons(Polygon p1, Polygon p2);
 
-Polygon exclusiveORPolygons(Polygon p1, Polygon p2);
+PolyList exclusiveORPolygons(Polygon p1, Polygon p2);
 
-Polygon differencePolygons(Polygon p1, Polygon p2);
+PolyList differencePolygons(Polygon p1, Polygon p2);
 
 /* 
  * Find if the polygon poly contains the point p
@@ -112,26 +111,26 @@ Polygon differencePolygons(Polygon p1, Polygon p2);
  * p : the point we want to know if he is inside the polygon
  * Return a boolean value : true if the point is inside the polygon, false otherwise
  */
-Bool containsPoint(Polygon poly, Point p);//OK
+Bool containsPoint(Polygon poly, Point p);
 
-Status containsPolygon(Polygon ref , Polygon poly);//OK
+Status containsPolygon(Polygon ref , Polygon poly);
 
-Polygon centralSymmetry(Polygon poly, Point p);//OK
+Polygon centralSymmetry(Polygon poly, Point p);
 
-Polygon rotatePolygon(Polygon poly, Point pt, double angle);//OK
+Polygon rotatePolygon(Polygon poly, Point pt, double angle);
 
-Polygon scalePolygon(Polygon poly, double factor);//OK
+Polygon scalePolygon(Polygon poly, double factor);
 
-Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);//OK
+Polygon translatePolygon(Polygon poly, Point pt1, Point pt2);
 
-Polygon convexHullPolygon(Polygon poly);//OK
+Polygon convexHullPolygon(Polygon poly);
 
 /*
  * Print a point on the terminal
  * P : (Point) the point to print on the terminal
  * Return : nothing
  */
-void printPoint(Point p);//OK
+void drawPoint(Point p);
 
 /*
  * Print a polygon with the same shape as the input one, 
@@ -140,7 +139,7 @@ void printPoint(Point p);//OK
  * poly : (Polygon) : the polygon we want to print
  * Return : Nothing
  */
-void printPolygon(Polygon poly);//OK
+void drawPolygon(Polygon poly);
 
 /*
  * Transform a polygon into a string that respect a specific template : [[x1,y1],[x2,y2],[...]]
@@ -276,7 +275,13 @@ Elt *findSamePoint(Polygon poly2, Point p);
  * poly : (Polygon) the polygon we want to transform
  * Return : A new polygon that can easely be printed on the terminal
  */
-Polygon ajustPolygon(Polygon poly);
+Polygon adjustPolygon(Polygon poly);
+
+Polygon sortByAngle(Polygon poly);
+
+double anglePoints(Point A, Point B, Point C);
+
+EltList *addPolyList(PolyList *list);
 
 /* Menu functions */
 

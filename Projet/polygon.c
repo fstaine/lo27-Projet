@@ -264,9 +264,21 @@ Polygon intersectionPolygons(Polygon poly1, Polygon poly2)
 	return intersectionpoly;
 }
 
-Polygon exclusiveORPolygons(Polygon p1, Polygon p2)
+PolyList exclusiveORPolygons(Polygon p1, Polygon p2)
 {
-	return createPolygon();
+	PolyList list, end;
+	end = list = NULL;
+	list = differencePolygons(p1,p2);
+	end = list;
+	if(end != NULL)
+	{
+		while(end->next != NULL)
+		{
+			end = end->next;
+		}
+	}
+	end->next = differencePolygons(p2,p1);
+	return list;
 }
 
 PolyList  differencePolygons(Polygon poly1, Polygon poly2)
@@ -668,7 +680,7 @@ Polygon convexHullPolygon(Polygon poly)
 	Elt *elem;
 	if(poly.size <= 3)/* already convex */
 	{
-		return poly;
+		return copyPolygon(poly);
 	}
 	else
 	{
