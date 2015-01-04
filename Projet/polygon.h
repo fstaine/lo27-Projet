@@ -250,7 +250,7 @@ Polygon freePolygon(Polygon poly);
 
 /*
  * Create a new polygon with the same points as the input one
- * poly : (Polygon) the poolygon we want to copy
+ * poly : (Polygon) the polygon we want to copy
  * Return : A new polygon with the same points as the input one
  */
 Polygon copyPolygon(Polygon poly);
@@ -259,7 +259,7 @@ Polygon copyPolygon(Polygon poly);
  * Copy the input polygon poly1 and add the intersection points in a new polygon
  * poly1 : (Polygon) the input polygon we are going to copy and add new points
  * poly2 : (Polygon) the polygon we will check to know if there are intersection between its edges and the ones of poly1
- * Return : a new polygon with the new points a poly1 and the intersection between poly1 and poly2
+ * Return : a new polygon with the new points of poly1 and the intersection between poly1 and poly2
  */
 Polygon addIntersectionPoints(Polygon poly1, Polygon poly2);
 
